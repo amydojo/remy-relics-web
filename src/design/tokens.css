@@ -1,0 +1,66 @@
+/* Figma V1 token mapping read from canonical nodes 540:2, 543:2, 544:31, 545:56. */
+:root {
+  color-scheme: light;
+
+  /* Figma color variables — names intentionally match the design source. */
+  --rr-surface-canvas: #f4f0e8;
+  --rr-surface-card: #fbf8f2;
+  --surface-inspection: #1b1a18;
+  --surface-inspection-raised: #211f1c;
+  --rr-text-primary: #1b1a18;
+  --rr-text-secondary: #575149;
+  --text-on-inspection: #fbf8f2;
+  --rr-border-default: #c9c0b3;
+  --border-on-inspection: #575149;
+  --status-active: #e34a3d;
+
+  /* Code-facing aliases preserve the Figma variable names above. */
+  --rr-surface-inspection: var(--surface-inspection);
+  --rr-surface-inspection-raised: var(--surface-inspection-raised);
+  --rr-text-on-inspection: var(--text-on-inspection);
+  --rr-border-on-inspection: var(--border-on-inspection);
+  --rr-status-active: var(--status-active);
+
+  /* Figma text styles: RR Mobile / Object, Action, Meta. */
+  --rr-font-family: var(--font-geist-mono), "SFMono-Regular", Consolas, monospace;
+  --rr-type-object-size: 18px;
+  --rr-type-object-line: 22px;
+  --rr-type-object-weight: 500;
+  --rr-type-object-tracking: -0.2px;
+  --rr-type-action-size: 13px;
+  --rr-type-action-line: 16px;
+  --rr-type-action-weight: 500;
+  --rr-type-action-tracking: 0.1px;
+  --rr-type-meta-size: 10px;
+  --rr-type-meta-line: 13px;
+  --rr-type-meta-weight: 400;
+  --rr-type-meta-tracking: 0.25px;
+
+  /* Frozen mobile reference and motion contracts. */
+  --rr-reference-width: 390px;
+  --rr-reference-height: 844px;
+  --rr-motion-ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --rr-motion-arrival: 240ms;
+  --rr-motion-promote: 260ms;
+  --rr-motion-crossfade: 180ms;
+  --rr-motion-evidence-snap: 220ms;
+  --rr-motion-record-hold: 120ms;
+  --rr-motion-record-total: 240ms;
+  --rr-motion-reduced: 120ms;
+  --rr-motion-ambient-distance: 12px;
+  --rr-motion-depth-foreground: 1;
+  --rr-motion-depth-mid: 0.6;
+  --rr-motion-depth-far: 0.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --rr-motion-arrival: var(--rr-motion-reduced);
+    --rr-motion-promote: var(--rr-motion-reduced);
+    --rr-motion-crossfade: var(--rr-motion-reduced);
+    --rr-motion-evidence-snap: var(--rr-motion-reduced);
+    --rr-motion-record-hold: 0ms;
+    --rr-motion-record-total: var(--rr-motion-reduced);
+    --rr-motion-ambient-distance: 0px;
+  }
+}

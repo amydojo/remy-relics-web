@@ -1,0 +1,237 @@
+.signal {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: var(--status-active);
+}
+
+.relicMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  color: var(--rr-text-secondary);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  white-space: nowrap;
+}
+
+.metaId {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.metaName {
+  color: var(--rr-text-primary);
+  font-size: var(--rr-type-action-size);
+  font-weight: var(--rr-type-action-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: var(--rr-type-action-line);
+}
+
+.metaStatus {
+  color: var(--status-active);
+}
+
+.spatialCue {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--rr-text-primary);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  white-space: nowrap;
+}
+
+.bottomNav {
+  position: absolute;
+  z-index: 40;
+  top: 788px;
+  left: 0;
+  display: flex;
+  width: 100%;
+  height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-top: 1px solid var(--rr-border-default);
+  background: var(--rr-surface-card);
+  font-size: var(--rr-type-action-size);
+  font-weight: var(--rr-type-action-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: var(--rr-type-action-line);
+}
+
+.bottomNav a {
+  text-decoration: none;
+}
+
+.navActive,
+.navMuted {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.navActive {
+  color: var(--rr-text-primary);
+}
+
+.navMuted {
+  color: var(--rr-text-secondary);
+}
+
+.acquireUnit {
+  display: flex;
+  width: 100%;
+  height: 82px;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.acquireButton {
+  display: flex;
+  width: 100%;
+  height: 52px;
+  flex: 0 0 52px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 26px;
+  background: var(--rr-surface-card);
+  color: var(--rr-text-primary);
+  font-size: var(--rr-type-action-size);
+  font-weight: var(--rr-type-action-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: var(--rr-type-action-line);
+  text-decoration: none;
+}
+
+.acquireUnit[data-context="record"] .acquireButton {
+  background: var(--surface-inspection);
+  color: var(--text-on-inspection);
+}
+
+.trustLine {
+  margin: 0;
+  color: var(--text-on-inspection);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  opacity: 0.62;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.acquireUnit[data-context="record"] .trustLine {
+  color: var(--rr-text-secondary);
+  opacity: 0.78;
+}
+
+.inspectionSheet {
+  width: 100%;
+  height: 230px;
+  padding: 18px 20px;
+  border: 1px solid var(--border-on-inspection);
+  border-radius: 18px;
+  background: var(--surface-inspection-raised);
+  color: var(--text-on-inspection);
+}
+
+.sheetTitle {
+  height: 17px;
+  margin: 0;
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  opacity: 0.72;
+}
+
+.sheetRows {
+  margin: 0;
+}
+
+.sheetRow {
+  display: flex;
+  height: 43px;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-on-inspection);
+}
+
+.sheetRow dt {
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  opacity: 0.46;
+}
+
+.sheetRow dd {
+  margin: 0;
+  font-size: var(--rr-type-action-size);
+  font-weight: var(--rr-type-action-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: var(--rr-type-action-line);
+  white-space: nowrap;
+}
+
+.sheetStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.evidenceLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  color: var(--rr-text-secondary);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  white-space: nowrap;
+}
+
+.evidenceLabel strong {
+  color: var(--rr-text-primary);
+  font-size: var(--rr-type-action-size);
+  font-weight: var(--rr-type-action-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: var(--rr-type-action-line);
+}
+
+.remy {
+  position: absolute;
+  display: block;
+}
+
+.remy img {
+  object-fit: contain;
+}
+
+@media (max-width: 350px) {
+  .bottomNav {
+    padding-inline: 14px;
+  }
+
+  .inspectionSheet {
+    padding-inline: 16px;
+  }
+
+  .sheetRow dd {
+    font-size: 11px;
+  }
+}

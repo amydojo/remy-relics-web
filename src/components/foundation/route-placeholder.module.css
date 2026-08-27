@@ -1,0 +1,30 @@
+.shell {
+  min-height: 100svh;
+  padding: 24px 20px;
+  background: var(--rr-surface-canvas);
+}
+
+.eyebrow,
+.status {
+  margin: 0;
+  color: var(--rr-text-secondary);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+}
+
+.title {
+  max-width: 100%;
+  margin: 34px 0 0;
+  color: var(--rr-text-primary);
+  font-size: var(--rr-type-object-size);
+  font-weight: var(--rr-type-object-weight);
+  letter-spacing: var(--rr-type-object-tracking);
+  line-height: var(--rr-type-object-line);
+  overflow-wrap: anywhere;
+}
+
+.status {
+  margin-top: 10px;
+}
