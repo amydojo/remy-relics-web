@@ -46,6 +46,10 @@
   --rr-motion-evidence-snap: 220ms;
   --rr-motion-record-hold: 120ms;
   --rr-motion-record-total: 240ms;
+  --rr-motion-archive-roam: 240ms;
+  --rr-motion-archive-record: 180ms;
+  --rr-motion-transfer-pause: 150ms;
+  --rr-motion-transfer-settle: 200ms;
   --rr-motion-reduced: 120ms;
   --rr-motion-ambient-distance: 12px;
   --rr-motion-depth-foreground: 1;
@@ -61,6 +65,10 @@
     --rr-motion-evidence-snap: var(--rr-motion-reduced);
     --rr-motion-record-hold: 0ms;
     --rr-motion-record-total: var(--rr-motion-reduced);
+    --rr-motion-archive-roam: var(--rr-motion-reduced);
+    --rr-motion-archive-record: var(--rr-motion-reduced);
+    --rr-motion-transfer-pause: 0ms;
+    --rr-motion-transfer-settle: var(--rr-motion-reduced);
     --rr-motion-ambient-distance: 0px;
   }
 }

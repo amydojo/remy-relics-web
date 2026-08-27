@@ -16,6 +16,7 @@ export type FigmaAssetKey = (typeof FIGMA_ASSET_KEYS)[number];
 
 type AssetUse =
   | "about.archive"
+  | "archive.thumb"
   | "arrival.archive-reveal"
   | "arrival.hero"
   | "current.dark"
@@ -57,7 +58,13 @@ export const CANONICAL_ASSET_MANIFEST = {
     sourceStatus: "canonical",
     publicPath: "/assets/figma/relic.evilEyeHex.macroBlackWhite.png",
     sha256: "b8261924c01258c8f6a68bd1c194263353638dc6e3279df27cece2b1c0b31400",
-    uses: ["arrival.hero", "current.dark", "inspection.hero", "record.hero"],
+    uses: [
+      "archive.thumb",
+      "arrival.hero",
+      "current.dark",
+      "inspection.hero",
+      "record.hero",
+    ],
     commerce: { kind: "unmapped" },
   },
   "relic.redWindowRect.macroBokeh": {
@@ -68,7 +75,7 @@ export const CANONICAL_ASSET_MANIFEST = {
     sourceStatus: "canonical",
     publicPath: "/assets/figma/relic.redWindowRect.macroBokeh.png",
     sha256: "f588b18eee15e2e3fcca839fe6bdcd0c4d7fbf6a090b72e11766ca126baa1e8c",
-    uses: ["current.large", "inspection.hero", "record.hero"],
+    uses: ["archive.thumb", "current.large", "inspection.hero", "record.hero"],
     commerce: { kind: "unmapped" },
   },
   "relic.clearFoundTrapezoid.heroBokeh": {
@@ -79,7 +86,7 @@ export const CANONICAL_ASSET_MANIFEST = {
     sourceStatus: "canonical",
     publicPath: "/assets/figma/relic.clearFoundTrapezoid.heroBokeh.png",
     sha256: "b5e81f06b428c8304e2a4b511b0a403cea9b6c649f8c6cdbe00ccbe6d0420655",
-    uses: ["current.large", "inspection.hero", "record.hero"],
+    uses: ["archive.thumb", "current.large", "inspection.hero", "record.hero"],
     commerce: { kind: "unmapped" },
   },
   "relic.lavenderTeardrop.macroLilac": {
@@ -129,6 +136,7 @@ export const CANONICAL_ASSET_MANIFEST = {
     uses: [
       "current.large",
       "current.small",
+      "archive.thumb",
       "inspection.hero",
       "record.hero",
       "record.macro",

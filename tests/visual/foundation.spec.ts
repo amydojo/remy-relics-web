@@ -42,3 +42,12 @@ test("Full Record canonical resting state", async ({ page }) => {
 
   await expect(page).toHaveScreenshot("pass-01-full-record.png", { fullPage: true });
 });
+
+test("Archive canonical resting state", async ({ page }) => {
+  await page.goto("/archive");
+  await settleImages(page);
+
+  await expect(page).toHaveScreenshot("checkpoint-02-archive.png", {
+    fullPage: true,
+  });
+});

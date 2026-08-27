@@ -1,16 +1,16 @@
 import type { FigmaNodeId } from "@/design/figma-contract";
 
-export const REMY_STATE_KEYS = ["patrol", "clipboard"] as const;
+export const REMY_STATE_KEYS = ["patrol", "clipboard", "box"] as const;
 
 export type RemyStateKey = (typeof REMY_STATE_KEYS)[number];
 
 type RemyStateManifestEntry = {
   figmaNodeId: FigmaNodeId;
-  height: 160;
+  height: number;
   key: RemyStateKey;
   publicPath: `/assets/figma/remy.${RemyStateKey}.png`;
   sha256: string;
-  width: 160;
+  width: number;
 };
 
 export const REMY_STATE_MANIFEST = {
@@ -29,6 +29,14 @@ export const REMY_STATE_MANIFEST = {
     height: 160,
     publicPath: "/assets/figma/remy.clipboard.png",
     sha256: "347d48a75354945fdee5559a0e5e7802bbe1a27048f9877593a0be6d065e606b",
+  },
+  box: {
+    key: "box",
+    figmaNodeId: "580:8",
+    width: 3240,
+    height: 3240,
+    publicPath: "/assets/figma/remy.box.png",
+    sha256: "e2427fc4cc57bcd5073bca95078f1282550866ad329970dbab872250872d6e52",
   },
 } as const satisfies Record<RemyStateKey, RemyStateManifestEntry>;
 

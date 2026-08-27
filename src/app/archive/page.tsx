@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
 
-import { RoutePlaceholder } from "@/components/foundation/route-placeholder";
+import { ArchiveScreen } from "@/components/remy/archive-screen";
 import { foundationPageMetadata } from "@/seo/metadata";
 
 export const metadata: Metadata = foundationPageMetadata("Archive");
 
 export default function ArchiveRoute() {
-  return (
-    <RoutePlaceholder
-      route="/archive"
-      title="ARCHIVE"
-      implementationPass="AFTER PASS 01"
-    />
-  );
+  return <ArchiveScreen />;
 }

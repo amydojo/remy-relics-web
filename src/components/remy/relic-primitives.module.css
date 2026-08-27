@@ -38,6 +38,10 @@
   color: var(--status-active);
 }
 
+.metaStatusMuted {
+  color: var(--rr-text-secondary);
+}
+
 .spatialCue {
   display: flex;
   align-items: center;
@@ -220,6 +224,60 @@
 
 .remy img {
   object-fit: contain;
+}
+
+.transferStamp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.3px solid currentcolor;
+  color: var(--rr-text-primary);
+  font-size: 9px;
+  font-weight: var(--rr-type-object-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: 1;
+  transform: rotate(-2deg);
+  transform-origin: center;
+  white-space: nowrap;
+}
+
+.transferStamp[data-reveal="hidden"] {
+  opacity: 0;
+  transform: rotate(-2deg) scale(0.92);
+}
+
+.transferStamp[data-reveal="revealing"] {
+  animation: transferReveal var(--rr-motion-transfer-settle) var(--rr-motion-ease-settle)
+    both;
+}
+
+@keyframes transferReveal {
+  0% {
+    opacity: 0;
+    transform: rotate(-2deg) scale(0.92);
+  }
+
+  58% {
+    opacity: 1;
+    transform: rotate(-2deg) scale(1.03);
+  }
+
+  100% {
+    opacity: 1;
+    transform: rotate(-2deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transferStamp[data-reveal="revealing"] {
+    animation: transferRevealReduced var(--rr-motion-reduced) linear both;
+  }
+}
+
+@keyframes transferRevealReduced {
+  from {
+    opacity: 0;
+  }
 }
 
 @media (max-width: 350px) {

@@ -56,3 +56,26 @@ export type TransferredRelic = RelicBase & {
 };
 
 export type Relic = AvailableRelic | TransferredRelic;
+
+export function transferRelic(
+  relic: AvailableRelic,
+  transferredOn?: IsoDate,
+): TransferredRelic {
+  const transferred: TransferredRelic = {
+    assembly: relic.assembly,
+    assets: relic.assets,
+    classification: relic.classification,
+    commerce: null,
+    condition: relic.condition,
+    id: relic.id,
+    materials: relic.materials,
+    name: relic.name,
+    recoveredOn: relic.recoveredOn,
+    seo: relic.seo,
+    slug: relic.slug,
+    status: "transferred",
+    ...(transferredOn === undefined ? {} : { transferredOn }),
+  };
+
+  return transferred;
+}

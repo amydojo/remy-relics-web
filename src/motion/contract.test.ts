@@ -5,6 +5,10 @@ import { MOTION_CONTRACT, motionProfile } from "./contract";
 describe("motion foundation", () => {
   it("keeps the frozen promotion timing", () => {
     expect(MOTION_CONTRACT.currentToInspectionMs).toBe(260);
+    expect(MOTION_CONTRACT.archiveRoamMs).toBe(240);
+    expect(MOTION_CONTRACT.archiveToRecordMs).toBe(180);
+    expect(MOTION_CONTRACT.transferRevealPauseMs).toBe(150);
+    expect(MOTION_CONTRACT.transferRevealSettleMs).toBe(200);
     expect(MOTION_CONTRACT.depthMultipliers).toEqual({
       foreground: 1,
       mid: 0.6,

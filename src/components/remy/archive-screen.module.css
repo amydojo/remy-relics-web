@@ -1,0 +1,254 @@
+.screen {
+  --archive-foreground-x: 0px;
+  --archive-foreground-y: 0px;
+  --archive-mid-x: 0px;
+  --archive-mid-y: 0px;
+  --archive-far-x: 0px;
+  --archive-far-y: 0px;
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  height: 844px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--rr-surface-canvas);
+  color: var(--rr-text-primary);
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.title,
+.menuGlyph {
+  position: absolute;
+  z-index: 20;
+  margin: 0;
+  font-size: var(--rr-type-object-size);
+  font-weight: var(--rr-type-object-weight);
+  letter-spacing: var(--rr-type-object-tracking);
+  line-height: var(--rr-type-object-line);
+}
+
+.title {
+  top: 24px;
+  left: 16px;
+}
+
+.menuGlyph {
+  top: 23px;
+  right: 21px;
+}
+
+.count,
+.fieldLabel,
+.traceTwoLabel,
+.traceThreeLabel,
+.traceFourLabel,
+.archiveNote {
+  position: absolute;
+  z-index: 20;
+  margin: 0;
+  color: var(--rr-text-secondary);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  white-space: nowrap;
+}
+
+.count {
+  top: 54px;
+  left: 16px;
+}
+
+.fieldLabel {
+  top: 72px;
+  left: 16px;
+  opacity: 0.44;
+}
+
+.roamCue {
+  position: absolute;
+  z-index: 20;
+  top: 70px;
+  left: 236px;
+}
+
+.traceField {
+  position: absolute;
+  z-index: 2;
+  inset: 0 0 56px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.trace {
+  position: absolute;
+  z-index: 3;
+  display: block;
+  margin: 0;
+  overflow: hidden;
+  background: var(--rr-surface-card);
+  transition: transform var(--rr-motion-archive-roam) var(--rr-motion-ease-settle);
+}
+
+.trace img {
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.traceOne {
+  top: 145px;
+  left: -30px;
+  width: 240px;
+  height: 272px;
+  transform: translate3d(
+      var(--archive-foreground-x),
+      var(--archive-foreground-y),
+      0
+    )
+    rotate(1.2deg);
+}
+
+.traceOne img {
+  object-position: 50% 42%;
+}
+
+.traceTwo {
+  top: 132px;
+  left: 293px;
+  width: 112px;
+  height: 148px;
+  opacity: 0.58;
+  transform: translate3d(var(--archive-mid-x), var(--archive-mid-y), 0)
+    rotate(-0.8deg);
+}
+
+.traceTwo img,
+.traceThree img,
+.traceFour img {
+  object-position: 50% 42%;
+}
+
+.traceThree {
+  top: 494px;
+  left: 42px;
+  width: 102px;
+  height: 120px;
+  opacity: 0.42;
+  transform: translate3d(var(--archive-far-x), var(--archive-far-y), 0)
+    rotate(-0.8deg);
+}
+
+.traceFour {
+  top: 449px;
+  left: 218px;
+  width: 164px;
+  height: 188px;
+  opacity: 0.72;
+  transform: translate3d(var(--archive-mid-x), var(--archive-mid-y), 0) rotate(1deg);
+}
+
+.dragging .trace {
+  transition: none;
+}
+
+.stampOne,
+.stampTwo,
+.stampThree,
+.stampFour {
+  position: absolute;
+  z-index: 4;
+}
+
+.stampOne {
+  top: 89px;
+  left: 18px;
+  width: 104px;
+  height: 25px;
+}
+
+.stampTwo {
+  top: 76px;
+  left: 17px;
+  width: 99px;
+  height: 24px;
+  font-size: 8px;
+}
+
+.stampThree {
+  top: 82px;
+  left: 15px;
+  width: 85px;
+  height: 20px;
+  font-size: 7px;
+}
+
+.stampFour {
+  top: 96px;
+  left: 19px;
+  width: 111px;
+  height: 26px;
+}
+
+.activeTether {
+  position: absolute;
+  z-index: 12;
+  top: 214px;
+  left: 210px;
+  width: 18px;
+  height: 1px;
+  background: var(--rr-text-primary);
+  opacity: 0.6;
+}
+
+.activeTrace {
+  position: absolute;
+  z-index: 12;
+  top: 160px;
+  left: 228px;
+  margin: 0;
+  font-size: var(--rr-type-action-size);
+  font-weight: var(--rr-type-action-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: var(--rr-type-action-line);
+  opacity: 0.9;
+}
+
+.traceTwoLabel {
+  top: 286px;
+  left: 300px;
+  opacity: 0.46;
+}
+
+.traceThreeLabel {
+  top: 620px;
+  left: 42px;
+  opacity: 0.38;
+}
+
+.traceFourLabel {
+  top: 642px;
+  left: 230px;
+  opacity: 0.5;
+}
+
+.archiveNote {
+  top: 720px;
+  left: 16px;
+  width: 270px;
+  opacity: 0.62;
+}
+
+.remyBox {
+  z-index: 20;
+  top: 708px;
+  left: 330px;
+  width: 46.4px;
+  height: 46.4px;
+}
+
+.screen[data-motion="reduced"] .trace {
+  transform: rotate(0deg);
+  transition-duration: var(--rr-motion-reduced);
+}

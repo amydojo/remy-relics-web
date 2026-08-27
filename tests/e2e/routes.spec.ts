@@ -6,7 +6,6 @@ const relicPath = "/relic/green-drop-lariat";
 const etsyUrl = "https://www.etsy.com/listing/4555589415";
 
 const placeholders = [
-  { path: "/archive", skeleton: "/archive", heading: "ARCHIVE" },
   { path: "/log", skeleton: "/log", heading: "YOUR INSPECTION LOG" },
   { path: "/about", skeleton: "/about", heading: "ABOUT THE ARCHIVE" },
 ] as const;
@@ -19,6 +18,61 @@ async function expectNoRuntimeError(page: Page) {
   ).toHaveCount(0);
   await expect(page.locator("body")).not.toHaveText("");
 }
+
+test("Archive preserves the canonical transferred trace field", async ({ page }) => {
+  await page.goto("/archive");
+
+  const archive = page.getByTestId("archive-field");
+  await expectNoRuntimeError(page);
+  await expect(archive).toHaveAttribute("data-node-id", "547:65");
+  await expect(page.getByText("12 TRANSFERRED", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Transferred relic traces").locator("figure")).toHaveCount(4);
+  await expect(page.getByLabel("Transferred", { exact: true })).toHaveCount(4);
+  await expect(page.getByRole("link", { name: "ARCHIVE" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  expect(await archive.evaluate((node) => getComputedStyle(node).display)).not.toBe(
+    "grid",
+  );
+
+  const box = await archive.boundingBox();
+  expect(box).not.toBeNull();
+  if (box === null) {
+    return;
+  }
+
+  await page.mouse.move(box.x + 180, box.y + 340);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 202, box.y + 352, { steps: 4 });
+  await expect(archive).toHaveCSS("--archive-foreground-x", "22px");
+  await expect(archive).toHaveCSS("--archive-mid-x", "13.2px");
+  await page.mouse.up();
+  await expect(archive).toHaveCSS("--archive-foreground-x", "0px");
+});
+
+test("Archive reduced motion removes roam parallax", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/archive");
+
+  const archive = page.getByTestId("archive-field");
+  const box = await archive.boundingBox();
+  expect(box).not.toBeNull();
+  if (box !== null) {
+    await page.mouse.move(box.x + 180, box.y + 340);
+    await page.mouse.down();
+    await page.mouse.move(box.x + 212, box.y + 360);
+    await page.mouse.up();
+  }
+
+  await expect(archive).toHaveAttribute("data-motion", "reduced");
+  await expect(archive).toHaveCSS("--archive-foreground-x", "0px");
+  expect(
+    await archive.evaluate((node) =>
+      getComputedStyle(node).getPropertyValue("--rr-motion-archive-roam").trim(),
+    ),
+  ).toBe(".12s");
+});
 
 async function enterInspection(page: Page) {
   await page.goto("/current");

@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import type { EtsyHandoff } from "@/commerce/etsy";
 import { getRemyStateAsset, type RemyStateKey } from "@/data/remy-state-manifest";
+import type { RelicStatus } from "@/data/relic";
 
 import styles from "./relic-primitives.module.css";
 
@@ -14,19 +15,27 @@ export function RelicMeta({
   className,
   displayName,
   relicId,
+  status = "available",
 }: {
   className?: string;
   displayName: string;
   relicId: string;
+  status?: RelicStatus | "inspected";
 }) {
+  const statusLabel = status.toUpperCase();
+
   return (
     <div className={`${styles.relicMeta} ${className ?? ""}`}>
       <span className={styles.metaId}>
-        <StatusSignal />
+        {status === "available" ? <StatusSignal /> : null}
         {relicId}
       </span>
       <span className={styles.metaName}>{displayName}</span>
-      <span className={styles.metaStatus}>AVAILABLE</span>
+      <span
+        className={status === "available" ? styles.metaStatus : styles.metaStatusMuted}
+      >
+        {statusLabel}
+      </span>
     </div>
   );
 }
@@ -46,14 +55,29 @@ export function SpatialCue({
   );
 }
 
-export function BottomNav({ handoff }: { handoff: EtsyHandoff }) {
+export function BottomNav({
+  active = "current",
+  handoff,
+}: {
+  active?: "archive" | "current" | "neutral";
+  handoff: EtsyHandoff;
+}) {
   return (
     <nav aria-label="Browse" className={styles.bottomNav}>
-      <Link className={styles.navActive} href="/current">
-        <StatusSignal />
+      <Link
+        aria-current={active === "current" ? "page" : undefined}
+        className={active === "current" ? styles.navActive : styles.navMuted}
+        href="/current"
+      >
+        {active === "current" ? <StatusSignal /> : null}
         CURRENT
       </Link>
-      <Link className={styles.navMuted} href="/archive">
+      <Link
+        aria-current={active === "archive" ? "page" : undefined}
+        className={active === "archive" ? styles.navActive : styles.navMuted}
+        href="/archive"
+      >
+        {active === "archive" ? <StatusSignal /> : null}
         ARCHIVE
       </Link>
       <a
@@ -140,6 +164,24 @@ export function EvidenceLabel({
     <span className={`${styles.evidenceLabel} ${className ?? ""}`}>
       <span>EVIDENCE {String(index).padStart(2, "0")}</span>
       <strong>{label}</strong>
+    </span>
+  );
+}
+
+export function TransferStamp({
+  className,
+  reveal = "settled",
+}: {
+  className?: string;
+  reveal?: "hidden" | "revealing" | "settled";
+}) {
+  return (
+    <span
+      aria-label="Transferred"
+      className={`${styles.transferStamp} ${className ?? ""}`}
+      data-reveal={reveal}
+    >
+      TRANSFERRED
     </span>
   );
 }

@@ -262,6 +262,10 @@
   color: var(--status-active);
 }
 
+.experience[data-status="transferred"] .recordStatus {
+  color: var(--rr-text-secondary);
+}
+
 .recordFieldLabel {
   top: 100px;
   right: 5px;
@@ -311,6 +315,16 @@
   z-index: 4;
   top: 146px;
   right: 21px;
+}
+
+.recordTransferStamp {
+  position: absolute;
+  z-index: 6;
+  top: 258px;
+  left: 58px;
+  width: 126px;
+  height: 30px;
+  background: color-mix(in srgb, var(--rr-surface-card) 82%, transparent);
 }
 
 .recordMacro {
@@ -397,6 +411,18 @@
 
 .recordAcquire {
   top: 744px;
+}
+
+.transferredReturn {
+  position: absolute;
+  z-index: 5;
+  top: 772px;
+  left: 20px;
+  font-size: var(--rr-type-action-size);
+  font-weight: var(--rr-type-action-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: var(--rr-type-action-line);
+  text-decoration: none;
 }
 
 .recordScreen[data-active-evidence="2"] .recordHero {

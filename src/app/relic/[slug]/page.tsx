@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { RelicExperience } from "@/components/remy/relic-experience";
 import {
   getGoldenPathRelic,
+  GREEN_DROP_FIGMA_LABEL,
   GREEN_DROP_LARIAT_SLUG,
 } from "@/data/golden-path";
 import { relicMetadata } from "@/seo/metadata";
@@ -28,9 +29,11 @@ export async function generateMetadata(
 export default async function RelicRoute(props: PageProps<"/relic/[slug]">) {
   const { slug } = await props.params;
 
-  if (getGoldenPathRelic(slug) === null) {
+  const relic = getGoldenPathRelic(slug);
+
+  if (relic === null) {
     notFound();
   }
 
-  return <RelicExperience />;
+  return <RelicExperience displayLabel={GREEN_DROP_FIGMA_LABEL} relic={relic} />;
 }
