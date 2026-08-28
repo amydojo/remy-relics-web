@@ -20,6 +20,14 @@ async function waitForDestinationPreload(page: Page) {
   }, mediaKey);
 }
 
+async function waitForObjectTravel(page: Page) {
+  await page.waitForFunction(() =>
+    document
+      .querySelector("main[data-screen='current']")
+      ?.getAttribute("data-object-transition") === "traveling",
+  );
+}
+
 async function installPhaseRecorder(page: Page) {
   await page.evaluate(() => {
     const main = document.querySelector<HTMLElement>("main[data-screen='current']");
@@ -84,11 +92,7 @@ test("Object Lift preserves one media identity and uses transform-only travel", 
   ).toBe("transform");
 
   await active.click();
-  await page.waitForFunction(() =>
-    document
-      .querySelector("main[data-screen='current']")
-      ?.getAttribute("data-object-transition") === "traveling",
-  );
+  await waitForObjectTravel(page);
 
   const travelingGeometry = await active.evaluate((node) => {
     const style = getComputedStyle(node);
@@ -135,6 +139,39 @@ test("Object Lift preserves one media identity and uses transform-only travel", 
     .toBe(true);
 });
 
+test("Object Lift keeps canonical destination geometry at 320 and 430 widths", async ({
+  page,
+}) => {
+  for (const viewportWidth of [320, 430]) {
+    await page.setViewportSize({ width: viewportWidth, height: 844 });
+    await page.goto("/current");
+    await waitForDestinationPreload(page);
+
+    const active = page.getByTestId("active-relic");
+    await active.click();
+    await waitForObjectTravel(page);
+
+    const geometry = await active.evaluate((node) => {
+      const style = getComputedStyle(node);
+      return {
+        top: style.top,
+        left: style.left,
+        width: style.width,
+        height: style.height,
+      };
+    });
+    const screenWidth = Math.min(viewportWidth, 390);
+
+    expect(geometry).toEqual({
+      top: "70px",
+      left: "16px",
+      width: `${screenWidth - 32}px`,
+      height: "318px",
+    });
+    await expect(page).toHaveURL(relicPath);
+  }
+});
+
 test("failed destination readiness degrades to the 120ms dissolve path", async ({
   page,
 }) => {
@@ -175,7 +212,7 @@ test("failed destination readiness degrades to the 120ms dissolve path", async (
     await current.evaluate((node) =>
       getComputedStyle(node).getPropertyValue("--rr-motion-reduced").trim(),
     ),
-  ).toBe("120ms");
+  ).toBe(".12s");
   await expect(page).toHaveURL(relicPath);
 });
 
@@ -185,6 +222,7 @@ test("reduced motion skips object travel and dissolves", async ({ page }) => {
 
   const current = page.locator("main[data-screen='current']");
   const active = page.getByTestId("active-relic");
+  await expect(active).toHaveCSS("transform", "none");
   await active.click();
 
   await expect(current).toHaveAttribute("data-object-transition", "dissolving");

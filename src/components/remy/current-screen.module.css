@@ -313,6 +313,17 @@
   transform: none;
 }
 
+.screen[data-motion="reduced"][data-object-transition="idle"] .activeObject,
+.screen[data-motion="reduced"][data-object-transition="idle"] .trace {
+  transition: none;
+}
+
+.screen[data-motion="reduced"][data-object-transition="dissolving"] .activeObject,
+.screen[data-motion="reduced"][data-object-transition="dissolving"] .trace {
+  transform: none;
+  transition: opacity var(--rr-motion-reduced) linear;
+}
+
 @media (max-width: 350px) {
   .fieldLabel {
     font-size: 9px;
