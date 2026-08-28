@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   type CSSProperties,
+  type KeyboardEvent,
   type PointerEvent,
   useEffect,
   useRef,
@@ -194,6 +195,29 @@ export function RelicExperience({
     }
   }
 
+  function handleEvidenceKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    let nextIndex = inspectionEvidence;
+
+    if (event.key === "ArrowRight") {
+      nextIndex = Math.min(
+        relic.assets.evidence.length - 1,
+        inspectionEvidence + 1,
+      );
+    } else if (event.key === "ArrowLeft") {
+      nextIndex = Math.max(0, inspectionEvidence - 1);
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = relic.assets.evidence.length - 1;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    setDragX(0);
+    setInspectionEvidence(nextIndex);
+  }
+
   function showFullRecord() {
     if (phase !== "rest") {
       return;
@@ -241,6 +265,7 @@ export function RelicExperience({
     >
       {mode === "inspection" && relic.status === "available" && handoff !== null && price !== null ? (
         <>
+          <h1 className={styles.visuallyHidden}>{displayLabel}</h1>
           <header className={`${styles.inspectionHeader} ${styles.inspectionFade}`}>
             <button
               aria-label="Back to Current Recoveries"
@@ -257,13 +282,17 @@ export function RelicExperience({
           </header>
 
           <div
-            aria-label="Relic evidence"
+            aria-label={`Relic evidence, item ${inspectionEvidence + 1} of ${relic.assets.evidence.length}`}
+            aria-roledescription="carousel"
             className={styles.inspectionViewport}
             data-testid="inspection-evidence"
+            onKeyDown={handleEvidenceKeyDown}
             onPointerCancel={finishEvidenceDrag}
             onPointerDown={beginEvidenceDrag}
             onPointerMove={moveEvidence}
             onPointerUp={finishEvidenceDrag}
+            role="region"
+            tabIndex={0}
           >
             <div
               className={`${styles.inspectionTrack} ${dragging ? styles.dragging : ""}`}
@@ -289,7 +318,9 @@ export function RelicExperience({
                             : styles.wornImage
                       }
                       fill
-                      preload={index === 0}
+                      loading={
+                        evidence.assetKey === relic.assets.hero ? "eager" : "lazy"
+                      }
                       sizes="(max-width: 390px) calc(100vw - 32px), 358px"
                       src={asset.publicPath}
                     />
@@ -367,6 +398,7 @@ export function RelicExperience({
             <Image
               alt={`${relic.name} full-object evidence`}
               fill
+              loading="eager"
               sizes="290px"
               src={heroAsset.publicPath}
             />
@@ -388,7 +420,13 @@ export function RelicExperience({
             onClick={() => setRecordEvidence(1)}
             type="button"
           >
-            <Image alt="" fill sizes="122px" src={heroAsset.publicPath} />
+            <Image
+              alt=""
+              fill
+              loading="eager"
+              sizes="122px"
+              src={heroAsset.publicPath}
+            />
           </button>
           <div className={styles.recordContext}>
             <Image alt="" fill sizes="212px" src={wornAsset.publicPath} />

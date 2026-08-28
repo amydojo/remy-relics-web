@@ -183,7 +183,7 @@ export function InspectionLogScreen() {
             <Image
               alt={`${primaryRelic.name} inspection trace`}
               fill
-              preload
+              loading="eager"
               sizes="253px"
               src={primaryAsset.publicPath}
             />

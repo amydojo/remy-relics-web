@@ -133,3 +133,34 @@
     left: auto;
   }
 }
+
+@media (min-width: 760px) {
+  .brand {
+    left: 32px;
+  }
+
+  .menuGlyph {
+    right: 32px;
+    left: auto;
+  }
+
+  .statement,
+  .traceTypes,
+  .remyNote,
+  .continueLink {
+    left: 7%;
+  }
+
+  .traceMap {
+    left: 54%;
+  }
+
+  .traceMapLabel {
+    left: calc(54% + 32px);
+  }
+
+  .remySleep {
+    right: 7%;
+    left: auto;
+  }
+}

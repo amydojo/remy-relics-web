@@ -252,3 +252,83 @@
   transform: rotate(0deg);
   transition-duration: var(--rr-motion-reduced);
 }
+
+@media (min-width: 760px) {
+  .title,
+  .count,
+  .fieldLabel {
+    left: 32px;
+  }
+
+  .menuGlyph {
+    right: 32px;
+  }
+
+  .roamCue {
+    right: 32px;
+    left: auto;
+  }
+
+  .traceOne {
+    left: 4%;
+    width: 280px;
+    height: 318px;
+  }
+
+  .activeTether {
+    left: calc(4% + 280px);
+  }
+
+  .activeTrace {
+    left: calc(4% + 300px);
+  }
+
+  .traceTwo {
+    top: 152px;
+    right: 8%;
+    left: auto;
+    width: 132px;
+    height: 174px;
+  }
+
+  .traceTwoLabel {
+    top: 332px;
+    right: 10%;
+    left: auto;
+  }
+
+  .traceThree {
+    top: 518px;
+    left: 38%;
+    width: 116px;
+    height: 136px;
+  }
+
+  .traceThreeLabel {
+    top: 660px;
+    left: 38%;
+  }
+
+  .traceFour {
+    top: 432px;
+    right: 25%;
+    left: auto;
+    width: 184px;
+    height: 210px;
+  }
+
+  .traceFourLabel {
+    top: 648px;
+    right: 27%;
+    left: auto;
+  }
+
+  .archiveNote {
+    left: 32px;
+  }
+
+  .remyBox {
+    right: 32px;
+    left: auto;
+  }
+}

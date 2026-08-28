@@ -16,6 +16,18 @@
   background: var(--rr-surface-canvas);
 }
 
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .inspectionHeader {
   position: relative;
   z-index: 4;
@@ -103,6 +115,11 @@
   overflow: hidden;
   touch-action: pan-y;
   user-select: none;
+}
+
+.inspectionViewport:focus-visible {
+  outline: 2px solid var(--status-active);
+  outline-offset: 4px;
 }
 
 .inspectionTrack {
@@ -498,5 +515,154 @@
 
   .recordFacts dl {
     font-size: 9px;
+  }
+}
+
+@media (min-width: 760px) {
+  .backButton,
+  .recordBack {
+    left: 32px;
+  }
+
+  .recordMenu {
+    right: 32px;
+  }
+
+  .inspectionViewport {
+    top: 90px;
+    left: 4%;
+    width: 56%;
+    height: 360px;
+  }
+
+  .inspectionCounter {
+    top: 470px;
+    left: 4%;
+  }
+
+  .swipeLabel {
+    top: 470px;
+    right: 40%;
+  }
+
+  .sheetPosition {
+    top: 130px;
+    left: 64%;
+    width: 32%;
+  }
+
+  .fullRecordButton {
+    top: 630px;
+    left: 64%;
+  }
+
+  .inspectionAcquire {
+    top: 680px;
+    left: 64%;
+    width: 32%;
+  }
+
+  .recordId {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .recordTitle,
+  .recordStatus {
+    left: 4%;
+  }
+
+  .recordFieldLabel {
+    right: 4%;
+  }
+
+  .recordHero {
+    left: 4%;
+    width: 42%;
+    height: 360px;
+  }
+
+  .recordEvidenceLabel {
+    right: auto;
+    left: 48%;
+  }
+
+  .recordMacro {
+    top: 220px;
+    left: 56%;
+    width: 18%;
+    height: 180px;
+  }
+
+  .recordContext {
+    top: 430px;
+    left: 69%;
+    width: 24%;
+    height: 160px;
+  }
+
+  .surfaceLabel {
+    top: 408px;
+    right: auto;
+    left: 56%;
+  }
+
+  .wornLabel {
+    top: 596px;
+    left: 69%;
+  }
+
+  .tapEvidence {
+    top: 516px;
+    right: 38%;
+  }
+
+  .recordFacts {
+    top: 570px;
+    left: 4%;
+    width: 42%;
+  }
+
+  .remyClipboard {
+    top: 650px;
+    right: 48%;
+  }
+
+  .recordAcquire {
+    top: 720px;
+    left: 64%;
+    width: 32%;
+  }
+
+  .transferredReturn {
+    left: 64%;
+  }
+
+  .recordScreen[data-active-evidence="2"] .recordHero {
+    top: 220px;
+    left: 56%;
+    width: 18%;
+    height: 180px;
+  }
+
+  .recordScreen[data-active-evidence="2"] .recordMacro {
+    top: 134px;
+    left: 4%;
+    width: 42%;
+    height: 360px;
+  }
+
+  .recordEntering .recordHero {
+    animation-name: recordHeroEnterDesktop;
+  }
+
+  @keyframes recordHeroEnterDesktop {
+    from {
+      top: 90px;
+      left: 4%;
+      width: 56%;
+      height: 360px;
+      transform: none;
+    }
   }
 }

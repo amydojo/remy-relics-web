@@ -4,6 +4,7 @@ test.describe.configure({ mode: "serial" });
 
 const relicPath = "/relic/green-drop-lariat";
 const etsyUrl = "https://www.etsy.com/listing/4555589415";
+const v1Routes = ["/", "/current", "/archive", "/log", "/about", relicPath];
 
 async function expectNoRuntimeError(page: Page) {
   await expect(
@@ -177,6 +178,35 @@ test("browser Back restores the Current resting field", async ({ page }) => {
     expect(after.width).toBeCloseTo(before.width, 0);
     expect(after.height).toBeCloseTo(before.height, 0);
   }
+  expect(await page.evaluate(() => scrollY)).toBe(0);
+});
+
+test("Back and in-screen return controls preserve route and scroll state", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByTestId("enter-recoveries").click();
+  await expect(page).toHaveURL("/current");
+  await page.goBack();
+  await expect(page).toHaveURL("/");
+  await expect(page.locator("main")).toHaveAttribute("data-screen", "arrival");
+  expect(await page.evaluate(() => scrollY)).toBe(0);
+
+  await page.goForward();
+  await expect(page).toHaveURL("/current");
+  await page.getByTestId("active-relic").click();
+  await page.getByTestId("view-full-record").click();
+  await expect(page.locator("main")).toHaveAttribute("data-screen", "record");
+  await page.getByRole("button", { name: "Back to Current Recoveries" }).click();
+  await expect(page).toHaveURL("/current");
+  expect(await page.evaluate(() => scrollY)).toBe(0);
+
+  await page.getByTestId("menu-trigger").click();
+  await page.getByRole("link", { name: "THE ARCHIVE" }).click();
+  await expect(page).toHaveURL("/archive");
+  await page.goBack();
+  await expect(page).toHaveURL("/current");
+  await expect(page.getByTestId("menu-overlay")).toHaveCount(0);
   expect(await page.evaluate(() => scrollY)).toBe(0);
 });
 
@@ -357,13 +387,170 @@ test("Inspection Log reopen honors the reduced-motion dissolve", async ({ page }
   await expect(page.locator("main")).toHaveAttribute("data-motion", "reduced");
 });
 
-for (const width of [320, 430]) {
-  test(`${width}px keeps the golden-path shell usable without horizontal overflow`, async ({
+test("keyboard navigation covers the field, evidence, Full Record, and menu", async ({
+  page,
+}) => {
+  await page.goto("/current");
+  const menuTrigger = page.getByTestId("menu-trigger");
+  await menuTrigger.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("menu-overlay")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(menuTrigger).toBeFocused();
+
+  const activeRelic = page.getByTestId("active-relic");
+  await activeRelic.focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(relicPath);
+
+  const evidence = page.getByTestId("inspection-evidence");
+  await evidence.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByTestId("evidence-counter")).toContainText(
+    "02 / 05 · SURFACE",
+  );
+  await page.keyboard.press("Home");
+  await expect(page.getByTestId("evidence-counter")).toContainText(
+    "01 / 05 · FULL OBJECT",
+  );
+
+  await page.getByTestId("view-full-record").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("main")).toHaveAttribute("data-screen", "record");
+  await page.getByRole("button", { name: "Promote surface evidence" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("section[data-active-evidence='2']")).toBeVisible();
+});
+
+test("reduced motion covers Arrival, evidence, and the menu overlay", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const arrival = page.locator("main[data-screen='arrival']");
+  await expect(arrival).toHaveAttribute("data-motion", "reduced");
+  expect(
+    await arrival.evaluate((node) =>
+      getComputedStyle(node).getPropertyValue("--rr-motion-arrival").trim(),
+    ),
+  ).toBe(".12s");
+
+  await page.getByTestId("menu-trigger").click();
+  const menu = page.getByTestId("menu-overlay");
+  expect(await menu.evaluate((node) => getComputedStyle(node).animationDuration)).toBe(
+    "0.12s",
+  );
+  await page.keyboard.press("Escape");
+
+  await page.getByTestId("enter-recoveries").click();
+  await expect(page).toHaveURL("/current");
+  await page.getByTestId("active-relic").click();
+  const evidence = page.getByTestId("inspection-evidence");
+  expect(
+    await evidence
+      .locator("div")
+      .first()
+      .evaluate((node) => getComputedStyle(node).transitionDuration),
+  ).toBe("0.12s");
+});
+
+test("V1 pages expose a minimal accessible document structure", async ({ page }) => {
+  for (const route of [...v1Routes, `${relicPath}?view=record`]) {
+    await page.goto(route);
+    const audit = await page.evaluate(() => {
+      const interactive = Array.from(document.querySelectorAll("a, button"));
+      const unnamedInteractive = interactive.filter((element) => {
+        const label = element.getAttribute("aria-label")?.trim();
+        const text = element.textContent?.trim();
+        return !label && !text;
+      });
+      const ids = Array.from(document.querySelectorAll("[id]"))
+        .map((element) => element.id)
+        .filter(Boolean);
+
+      return {
+        duplicateIds: ids.filter((id, index) => ids.indexOf(id) !== index),
+        headings: document.querySelectorAll("h1").length,
+        imagesMissingAlt: document.querySelectorAll("img:not([alt])").length,
+        lang: document.documentElement.lang,
+        unnamedInteractive: unnamedInteractive.length,
+      };
+    });
+
+    expect(audit).toEqual({
+      duplicateIds: [],
+      headings: 1,
+      imagesMissingAlt: 0,
+      lang: "en",
+      unnamedInteractive: 0,
+    });
+  }
+});
+
+test("all V1 pages publish canonical Open Graph metadata and crawl rules", async ({
+  page,
+  request,
+}) => {
+  for (const route of v1Routes) {
+    await page.goto(route);
+    const canonicalPath = route === "/" ? "" : route;
+    await expect(page.locator("link[rel='canonical']")).toHaveAttribute(
+      "href",
+      `http://localhost:3000${canonicalPath}`,
+    );
+    await expect(page.locator("meta[property='og:image']")).toHaveAttribute(
+      "content",
+      /\/assets\/figma\/.+\.(png|svg)$/,
+    );
+    await expect(page.locator("meta[name='robots']")).toHaveAttribute(
+      "content",
+      /index/,
+    );
+  }
+
+  const robots = await (await request.get("/robots.txt")).text();
+  expect(robots).toContain("Allow: /");
+  expect(robots).not.toContain("Disallow: /");
+  const sitemap = await (await request.get("/sitemap.xml")).text();
+  expect(sitemap).toContain("/relic/green-drop-lariat");
+});
+
+for (const width of [320, 390, 430]) {
+  test(`${width}px keeps every V1 field usable without horizontal overflow`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 844 });
-    await page.goto(relicPath);
-    await expect(page.getByTestId("acquire-inspection")).toBeVisible();
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+    for (const route of v1Routes) {
+      await page.goto(route);
+      const field = page.locator("main[data-screen]");
+      await expect(field).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
+        width,
+      );
+      expect(await field.evaluate((node) => getComputedStyle(node).display)).not.toBe(
+        "grid",
+      );
+    }
   });
 }
+
+test("desktop expands the same spatial field without card or grid conversion", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1024, height: 900 });
+
+  for (const route of [...v1Routes, `${relicPath}?view=record`]) {
+    await page.goto(route);
+    const field = page.locator("main[data-screen]");
+    const box = await field.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box?.width).toBeGreaterThan(700);
+    expect(await field.evaluate((node) => getComputedStyle(node).display)).not.toBe(
+      "grid",
+    );
+    expect(await page.locator("[data-testid='product-card']").count()).toBe(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
+      1024,
+    );
+  }
+});

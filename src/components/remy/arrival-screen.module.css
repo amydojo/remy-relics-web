@@ -173,3 +173,25 @@
     font-size: 9px;
   }
 }
+
+@media (min-width: 760px) {
+  .hero {
+    width: min(58%, 560px);
+  }
+
+  .archiveStatus {
+    right: 32px;
+  }
+
+  .statement,
+  .classification,
+  .enterLink {
+    left: 6%;
+  }
+
+  .remyPatrol,
+  .routeCheck,
+  .fieldCount {
+    right: 6%;
+  }
+}

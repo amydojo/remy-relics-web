@@ -7,7 +7,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // Next's development type/artifact generation is shared by the test server;
+  // one worker keeps visual captures deterministic across route compilations.
+  workers: 1,
   reporter: process.env.CI ? "github" : "list",
   expect: {
     toHaveScreenshot: {
@@ -23,10 +25,22 @@ export default defineConfig({
   projects: [
     {
       name: "mobile-390",
+      testIgnore: /touch\.spec\.ts/,
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 390, height: 844 },
         deviceScaleFactor: 1,
+      },
+    },
+    {
+      name: "mobile-touch",
+      testMatch: /touch\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 390, height: 844 },
+        deviceScaleFactor: 1,
+        hasTouch: true,
+        isMobile: true,
       },
     },
   ],

@@ -259,11 +259,110 @@
     font-size: 9px;
   }
 
+  .activeObject {
+    width: 64%;
+  }
+
+  .activeCount {
+    right: 50px;
+  }
+
   .activeMeta {
     right: 0;
   }
 
   .inspectCue {
     right: 20px;
+  }
+
+  .clearTrace {
+    width: 50%;
+  }
+
+  .redLabel {
+    right: 4px;
+  }
+}
+
+@media (min-width: 760px) {
+  .title,
+  .availableCount {
+    left: 32px;
+  }
+
+  .titleSignal {
+    left: 232px;
+  }
+
+  .menuGlyph,
+  .fieldLabel {
+    right: 32px;
+  }
+
+  .activeObject {
+    left: 4%;
+    width: 34%;
+    height: 400px;
+  }
+
+  .activeCount,
+  .activeMeta,
+  .inspectCue {
+    right: auto;
+    left: 42%;
+  }
+
+  .tether {
+    left: 38%;
+    width: 3%;
+  }
+
+  .eyeTrace {
+    top: 224px;
+    right: 8%;
+    width: 140px;
+    height: 196px;
+  }
+
+  .eyeLabel {
+    top: 202px;
+    right: 10%;
+  }
+
+  .clearTrace {
+    top: 486px;
+    left: 47%;
+    width: 28%;
+    height: 224px;
+  }
+
+  .clearLabel {
+    top: 464px;
+    left: 47%;
+  }
+
+  .redTrace {
+    top: 610px;
+    right: 3%;
+    width: 122px;
+    height: 150px;
+  }
+
+  .redLabel {
+    top: 588px;
+    right: 4%;
+  }
+
+  .promoting .activeObject {
+    top: 90px;
+    left: 4%;
+    width: 56%;
+    height: 360px;
+  }
+
+  .screen[data-motion="reduced"].promoting .activeObject {
+    left: 4%;
+    width: 34%;
+    height: 400px;
   }
 }

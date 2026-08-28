@@ -153,7 +153,11 @@ export function ArchiveScreen() {
               <Image
                 alt={trace.alt}
                 fill
-                loading={index === 0 ? "eager" : "lazy"}
+                loading={
+                  index === 0 || trace.assetKey === "relic.greenDrop.sunlightMacro"
+                    ? "eager"
+                    : "lazy"
+                }
                 sizes={index === 0 ? "240px" : index === 3 ? "164px" : "112px"}
                 src={asset.publicPath}
               />

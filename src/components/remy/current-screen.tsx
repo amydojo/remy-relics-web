@@ -179,7 +179,7 @@ export function CurrentScreen() {
         <Image
           alt="Green teardrop lariat resting in sunlight"
           fill
-          preload
+          loading="eager"
           sizes="(max-width: 390px) 68vw, 265px"
           src={greenDrop.publicPath}
         />

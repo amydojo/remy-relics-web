@@ -36,6 +36,18 @@ a {
   color: inherit;
 }
 
+:where(a, button):focus-visible {
+  outline: 2px solid var(--status-active);
+  outline-offset: 4px;
+}
+
+@media (min-width: 760px) {
+  body > main[data-screen] {
+    width: min(100%, 960px);
+    max-width: 960px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
     scroll-behavior: auto;
