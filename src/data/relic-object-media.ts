@@ -39,26 +39,40 @@ export type RelicObjectMediaRecord = Readonly<{
   fallbackAssetKey: FigmaAssetKey;
 }>;
 
-const OBJECT_MEDIA_GEOMETRY = {
+type ObjectMediaGeometry = Pick<
+  RelicObjectMediaRecord,
+  | "alphaBounds"
+  | "visualCenter"
+  | "anchor"
+  | "focalPoint"
+  | "preferredScale"
+  | "safeCrop"
+  | "backgroundIsolationStatus"
+> & {
+  derivativeWidths: readonly number[];
+};
+
+const DEFAULT_OBJECT_MEDIA_GEOMETRY: ObjectMediaGeometry = {
+  alphaBounds: null,
+  visualCenter: { x: 0.5, y: 0.5 },
+  anchor: { x: 0.5, y: 0.5 },
+  focalPoint: { x: 0.5, y: 0.5 },
+  preferredScale: 1,
+  safeCrop: null,
+  backgroundIsolationStatus: "contextual-rectangle",
+  derivativeWidths: [480, 720, 1080, 1600],
+};
+
+const OBJECT_MEDIA_GEOMETRY: Partial<Record<RelicId, ObjectMediaGeometry>> = {
   "RR-S3-N1": {
-    alphaBounds: null,
+    ...DEFAULT_OBJECT_MEDIA_GEOMETRY,
     visualCenter: { x: 0.5, y: 0.44 },
-    anchor: { x: 0.5, y: 0.5 },
     focalPoint: { x: 0.5, y: 0.44 },
-    preferredScale: 1,
-    safeCrop: null,
-    backgroundIsolationStatus: "contextual-rectangle",
-    derivativeWidths: [480, 720, 1080, 1600] as const,
   },
-} as const;
+};
 
 export function getRelicObjectMedia(relic: Relic): RelicObjectMediaRecord {
-  const geometry = OBJECT_MEDIA_GEOMETRY[relic.id as keyof typeof OBJECT_MEDIA_GEOMETRY];
-
-  if (geometry === undefined) {
-    throw new Error(`No relic object media record exists for ${relic.id}.`);
-  }
-
+  const geometry = OBJECT_MEDIA_GEOMETRY[relic.id] ?? DEFAULT_OBJECT_MEDIA_GEOMETRY;
   const asset = getCanonicalAsset(relic.assets.hero);
 
   return {
