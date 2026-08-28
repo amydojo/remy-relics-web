@@ -75,7 +75,6 @@ test("Object Lift preserves one media identity and uses transform-only travel", 
   await waitForDestinationPreload(page);
   await installPhaseRecorder(page);
 
-  const current = page.locator("main[data-screen='current']");
   const active = page.getByTestId("active-relic");
 
   await expect(active).toHaveAttribute("data-relic-id", relicId);
