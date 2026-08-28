@@ -3,6 +3,16 @@ type SiteEnvironment = {
   VERCEL_PROJECT_PRODUCTION_URL?: string;
 };
 
+export type MenuLinkEnvironment = {
+  NEXT_PUBLIC_ETSY_SHOP_URL?: string;
+  NEXT_PUBLIC_INSTAGRAM_URL?: string;
+};
+
+export type MenuExternalLinks = {
+  etsyShop: string | null;
+  instagram: string | null;
+};
+
 function withProtocol(value: string) {
   return /^https?:\/\//i.test(value) ? value : `https://${value}`;
 }
@@ -23,4 +33,32 @@ export function getSiteUrl(environment?: SiteEnvironment) {
   }
 
   return url;
+}
+
+function getOptionalExternalUrl(value: string | undefined) {
+  if (value === undefined || value.trim() === "") {
+    return null;
+  }
+
+  try {
+    const url = new URL(value);
+
+    return url.protocol === "https:" || url.protocol === "http:"
+      ? url.toString()
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+export function getMenuExternalLinks(
+  environment: MenuLinkEnvironment = {
+    NEXT_PUBLIC_ETSY_SHOP_URL: process.env.NEXT_PUBLIC_ETSY_SHOP_URL,
+    NEXT_PUBLIC_INSTAGRAM_URL: process.env.NEXT_PUBLIC_INSTAGRAM_URL,
+  },
+): MenuExternalLinks {
+  return {
+    etsyShop: getOptionalExternalUrl(environment.NEXT_PUBLIC_ETSY_SHOP_URL),
+    instagram: getOptionalExternalUrl(environment.NEXT_PUBLIC_INSTAGRAM_URL),
+  };
 }

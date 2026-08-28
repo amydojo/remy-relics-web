@@ -20,6 +20,7 @@ import {
   StatusSignal,
   TransferStamp,
 } from "@/components/remy/relic-primitives";
+import { SiteMenu } from "@/components/remy/site-menu";
 import { createEtsyHandoff } from "@/commerce/etsy";
 import { getCanonicalAsset } from "@/data/asset-manifest";
 import {
@@ -49,15 +50,17 @@ type EvidencePointer = {
 
 export function RelicExperience({
   displayLabel,
+  initialMode = "inspection",
   relic,
 }: {
   displayLabel: string;
+  initialMode?: ExperienceMode;
   relic: Relic;
 }) {
   const router = useRouter();
   const prefersReducedMotion = usePrefersReducedMotion();
   const [mode, setMode] = useState<ExperienceMode>(() =>
-    relic.status === "transferred" ? "record" : "inspection",
+    relic.status === "transferred" ? "record" : initialMode,
   );
   const [phase, setPhase] = useState<TransitionPhase>("rest");
   const [inspectionEvidence, setInspectionEvidence] = useState(0);
@@ -344,7 +347,7 @@ export function RelicExperience({
             ←
           </button>
           <p className={styles.recordId}>{relic.id}</p>
-          <span aria-hidden className={styles.recordMenu}>☰</span>
+          <SiteMenu className={styles.recordMenu} />
           <h1 className={styles.recordTitle}>{displayLabel}</h1>
           <p className={styles.recordStatus}>
             OBJECT RECORD / {relic.status === "available" ? "ACTIVE" : "TRANSFERRED"}

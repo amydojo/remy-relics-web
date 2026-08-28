@@ -5,11 +5,6 @@ test.describe.configure({ mode: "serial" });
 const relicPath = "/relic/green-drop-lariat";
 const etsyUrl = "https://www.etsy.com/listing/4555589415";
 
-const placeholders = [
-  { path: "/log", skeleton: "/log", heading: "YOUR INSPECTION LOG" },
-  { path: "/about", skeleton: "/about", heading: "ABOUT THE ARCHIVE" },
-] as const;
-
 async function expectNoRuntimeError(page: Page) {
   await expect(
     page.locator(
@@ -79,25 +74,6 @@ async function enterInspection(page: Page) {
   await page.getByTestId("active-relic").click();
   await expect(page).toHaveURL(relicPath);
   await expect(page.locator("main")).toHaveAttribute("data-screen", "inspection");
-}
-
-for (const route of placeholders) {
-  test(`${route.path} remains a PASS 00 placeholder`, async ({ page }) => {
-    const response = await page.goto(route.path);
-
-    expect(response?.status()).toBe(200);
-    await expectNoRuntimeError(page);
-    await expect(page.locator("main")).toHaveAttribute(
-      "data-route-skeleton",
-      route.skeleton,
-    );
-    await expect(
-      page.getByRole("heading", { level: 1, name: route.heading }),
-    ).toBeVisible();
-    await expect(
-      page.getByText("SCREEN NOT IMPLEMENTED", { exact: false }),
-    ).toBeVisible();
-  });
 }
 
 test("Arrival → Current → Inspection → Full Record preserves the golden path", async ({
@@ -278,6 +254,107 @@ test("the locked relic route has canonical SEO and unknown relics 404", async ({
 
   const response = await page.goto("/relic/not-canonical");
   expect(response?.status()).toBe(404);
+});
+
+test("Inspection Log uses only local observation truth and reopens the permanent record", async ({
+  page,
+}) => {
+  await page.goto("/log");
+  await expect(page.locator("main")).toHaveAttribute(
+    "data-screen",
+    "inspection-log",
+  );
+  await expect(page.getByTestId("inspection-log-count")).toHaveText(
+    "00 OBJECTS OBSERVED",
+  );
+  await expect(page.getByText("NO OBJECTS OBSERVED YET.")).toBeVisible();
+  await expect(page.getByTestId("reopen-relic")).toHaveCount(0);
+
+  await enterInspection(page);
+  await page.goto("/log");
+  await expect(page.getByTestId("inspection-log-count")).toHaveText(
+    "01 OBJECTS OBSERVED",
+  );
+  await expect(page.getByText("LOCAL DEVICE / NO ACCOUNT REQUIRED")).toBeVisible();
+  await expect(page.getByText("GREEN TEARDROP BEND", { exact: true })).toBeVisible();
+
+  const storedRecord = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("rr.inspectionLog.v1") ?? "null"),
+  );
+  expect(storedRecord).not.toHaveProperty("purchased");
+  expect(storedRecord.records["RR-S3-N1"]).not.toHaveProperty("purchased");
+
+  await page.getByTestId("reopen-relic").click();
+  await expect(page).toHaveURL(`${relicPath}?view=record`);
+  await expect(page.locator("main")).toHaveAttribute("data-screen", "record");
+  await expect(page.getByTestId("acquire-record")).toHaveAttribute("href", etsyUrl);
+
+  await page.goBack();
+  await expect(page).toHaveURL("/log");
+  await expect(page.locator("main")).toHaveAttribute(
+    "data-screen",
+    "inspection-log",
+  );
+  expect(await page.evaluate(() => scrollY)).toBe(0);
+});
+
+test("Material Memory and the canonical menu expose only implemented destinations", async ({
+  page,
+}) => {
+  await page.goto("/about");
+  await expect(page.locator("main")).toHaveAttribute("data-node-id", "546:78");
+  await expect(
+    page.getByRole("heading", { name: "EVERY ENCOUNTER LEAVES MATERIAL MEMORY." }),
+  ).toBeVisible();
+  await expect(page.getByText("SCRATCH", { exact: false })).toBeVisible();
+  await expect(
+    page.getByText("REMY FELL ASLEEP ON THE PAPERWORK."),
+  ).toBeVisible();
+
+  const trigger = page.getByTestId("menu-trigger");
+  await trigger.click();
+  const menu = page.getByTestId("menu-overlay");
+  await expect(menu).toHaveAttribute("role", "dialog");
+  await expect(page.getByRole("link", { name: "THE ARCHIVE" })).toHaveAttribute(
+    "href",
+    "/archive",
+  );
+  await expect(page.getByTestId("menu-instagram")).toHaveAttribute(
+    "aria-disabled",
+    "true",
+  );
+  await expect(page.getByTestId("menu-etsy-shop")).toHaveAttribute(
+    "aria-disabled",
+    "true",
+  );
+  await expect(page.getByRole("link", { name: /YOUR LOG/ })).toHaveCount(0);
+
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveCount(0);
+  await expect(trigger).toBeFocused();
+
+  await enterInspection(page);
+  await page.goto("/current");
+  await page.getByTestId("menu-trigger").click();
+  await expect(page.getByRole("link", { name: "YOUR LOG / 01" })).toBeVisible();
+});
+
+test("Inspection Log reopen honors the reduced-motion dissolve", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await enterInspection(page);
+  await page.goto("/log");
+
+  const log = page.locator("main[data-screen='inspection-log']");
+  await expect(log).toHaveAttribute("data-motion", "reduced");
+  expect(
+    await log.evaluate((node) =>
+      getComputedStyle(node).getPropertyValue("--log-reopen-duration").trim(),
+    ),
+  ).toBe("120ms");
+
+  await page.getByTestId("reopen-relic").click();
+  await expect(page).toHaveURL(`${relicPath}?view=record`);
+  await expect(page.locator("main")).toHaveAttribute("data-motion", "reduced");
 });
 
 for (const width of [320, 430]) {

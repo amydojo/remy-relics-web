@@ -4,6 +4,7 @@ import {
   formatRecoveryDate,
   formatRelicPrice,
   getGoldenPathRelic,
+  getGoldenPathRelicById,
   GREEN_DROP_FIGMA_LABEL,
   GREEN_DROP_LARIAT,
 } from "./golden-path";
@@ -33,5 +34,7 @@ describe("PASS 01 relic canon", () => {
   it("does not infer any other relic route", () => {
     expect(getGoldenPathRelic("green-drop-lariat")).toBe(GREEN_DROP_LARIAT);
     expect(getGoldenPathRelic("green-teardrop-bend")).toBeNull();
+    expect(getGoldenPathRelicById("RR-S3-N1")).toBe(GREEN_DROP_LARIAT);
+    expect(getGoldenPathRelicById("RR-UNMAPPED")).toBeNull();
   });
 });

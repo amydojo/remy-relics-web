@@ -28,6 +28,7 @@ export async function generateMetadata(
 
 export default async function RelicRoute(props: PageProps<"/relic/[slug]">) {
   const { slug } = await props.params;
+  const { view } = await props.searchParams;
 
   const relic = getGoldenPathRelic(slug);
 
@@ -35,5 +36,11 @@ export default async function RelicRoute(props: PageProps<"/relic/[slug]">) {
     notFound();
   }
 
-  return <RelicExperience displayLabel={GREEN_DROP_FIGMA_LABEL} relic={relic} />;
+  return (
+    <RelicExperience
+      displayLabel={GREEN_DROP_FIGMA_LABEL}
+      initialMode={view === "record" ? "record" : "inspection"}
+      relic={relic}
+    />
+  );
 }

@@ -18,6 +18,7 @@ import {
   SpatialCue,
   StatusSignal,
 } from "@/components/remy/relic-primitives";
+import { SiteMenu } from "@/components/remy/site-menu";
 import { createEtsyHandoff } from "@/commerce/etsy";
 import { getCanonicalAsset } from "@/data/asset-manifest";
 import {
@@ -159,7 +160,7 @@ export function CurrentScreen() {
         <h1 className={styles.title}>CURRENT RECOVERIES</h1>
         <StatusSignal className={styles.titleSignal} />
         <p className={styles.availableCount}>07 AVAILABLE</p>
-        <span aria-hidden className={styles.menuGlyph}>☰</span>
+        <SiteMenu className={styles.menuGlyph} />
         <p className={styles.fieldLabel}>
           FIELD / 01
           <br />

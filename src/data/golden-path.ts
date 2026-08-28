@@ -1,5 +1,5 @@
 import { CANONICAL_ETSY_LISTING_IDS } from "@/commerce/etsy";
-import type { AvailableRelic, RelicSlug } from "@/data/relic";
+import type { AvailableRelic, Relic, RelicId, RelicSlug } from "@/data/relic";
 
 export const GREEN_DROP_LARIAT_SLUG = "green-drop-lariat" as const;
 export const GREEN_DROP_FIGMA_LABEL = "GREEN TEARDROP BEND" as const;
@@ -49,6 +49,10 @@ export const GREEN_DROP_LARIAT = {
 
 export function getGoldenPathRelic(slug: RelicSlug) {
   return slug === GREEN_DROP_LARIAT_SLUG ? GREEN_DROP_LARIAT : null;
+}
+
+export function getGoldenPathRelicById(relicId: RelicId): Relic | null {
+  return relicId === GREEN_DROP_LARIAT.id ? GREEN_DROP_LARIAT : null;
 }
 
 export function formatRelicPrice(relic: AvailableRelic) {

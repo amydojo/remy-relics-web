@@ -1,0 +1,135 @@
+.screen {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  height: 844px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--rr-surface-canvas);
+  color: var(--rr-text-primary);
+}
+
+.brand,
+.traceTypes,
+.traceMapLabel,
+.remyNote {
+  position: absolute;
+  margin: 0;
+  color: var(--rr-text-secondary);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  white-space: nowrap;
+}
+
+.brand {
+  top: 22px;
+  left: 16px;
+}
+
+.menuGlyph {
+  position: absolute;
+  top: 18px;
+  left: 352px;
+  font-size: var(--rr-type-object-size);
+  font-weight: var(--rr-type-object-weight);
+  letter-spacing: var(--rr-type-object-tracking);
+  line-height: var(--rr-type-object-line);
+}
+
+.statement {
+  position: absolute;
+  top: 148px;
+  left: 20px;
+  margin: 0;
+  font-size: var(--rr-type-display-size);
+  font-weight: var(--rr-type-display-weight);
+  letter-spacing: var(--rr-type-display-tracking);
+  line-height: var(--rr-type-display-line);
+  white-space: nowrap;
+}
+
+.traceTypes {
+  top: 304px;
+  left: 20px;
+}
+
+.traceMap {
+  position: absolute;
+  top: 364px;
+  left: 156px;
+  width: 208px;
+  height: 266px;
+}
+
+.traceMap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.traceMapLabel {
+  top: 628px;
+  left: 188px;
+}
+
+.remyNote {
+  top: 696px;
+  left: 20px;
+  color: var(--status-active);
+}
+
+.remyAnchor {
+  position: absolute;
+  top: 640px;
+}
+
+.remySleep {
+  top: 654px;
+  left: 300px;
+  width: 67.2px;
+  height: 67.2px;
+}
+
+.continueLink {
+  position: absolute;
+  top: 788px;
+  left: 20px;
+  font-size: var(--rr-type-action-size);
+  font-weight: var(--rr-type-action-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: var(--rr-type-action-line);
+  text-decoration: none;
+}
+
+.continueLink:focus-visible {
+  outline: 2px solid var(--status-active);
+  outline-offset: 4px;
+}
+
+@media (max-width: 350px) {
+  .menuGlyph {
+    right: 20px;
+    left: auto;
+  }
+
+  .statement {
+    font-size: 25px;
+    line-height: 30px;
+  }
+
+  .traceMap {
+    left: 128px;
+  }
+
+  .traceMapLabel {
+    left: 160px;
+  }
+
+  .remySleep {
+    right: 20px;
+    left: auto;
+  }
+}

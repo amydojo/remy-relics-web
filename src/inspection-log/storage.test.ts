@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   createInspectionLogStore,
   INSPECTION_LOG_STORAGE_KEY,
+  parseInspectionLogRecords,
   type StorageLike,
 } from "./storage";
 
@@ -60,6 +61,7 @@ describe("Inspection Log storage", () => {
     const log = createInspectionLogStore({ storage });
 
     expect(log.list()).toEqual([]);
+    expect(parseInspectionLogRecords("not-json")).toEqual([]);
   });
 
   it("fails safely when browser storage is unavailable", () => {

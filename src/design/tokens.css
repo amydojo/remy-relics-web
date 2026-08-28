@@ -27,6 +27,10 @@
   --rr-type-object-line: 22px;
   --rr-type-object-weight: 500;
   --rr-type-object-tracking: -0.2px;
+  --rr-type-display-size: 28px;
+  --rr-type-display-line: 32px;
+  --rr-type-display-weight: 500;
+  --rr-type-display-tracking: -0.6px;
   --rr-type-action-size: 13px;
   --rr-type-action-line: 16px;
   --rr-type-action-weight: 500;

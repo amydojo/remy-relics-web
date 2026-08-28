@@ -14,6 +14,7 @@ import {
   SpatialCue,
   TransferStamp,
 } from "@/components/remy/relic-primitives";
+import { SiteMenu } from "@/components/remy/site-menu";
 import { createEtsyHandoff } from "@/commerce/etsy";
 import { ARCHIVE_TRACES } from "@/data/archive";
 import { getCanonicalAsset } from "@/data/asset-manifest";
@@ -130,7 +131,7 @@ export function ArchiveScreen() {
       <header>
         <h1 className={styles.title}>ARCHIVE</h1>
         <p className={styles.count}>12 TRANSFERRED</p>
-        <span aria-hidden className={styles.menuGlyph}>☰</span>
+        <SiteMenu className={styles.menuGlyph} />
         <p className={styles.fieldLabel}>
           ARCHIVE FIELD / 12
           <br />

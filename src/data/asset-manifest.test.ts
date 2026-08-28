@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   CANONICAL_ASSET_MANIFEST,
+  CANONICAL_VECTOR_ASSET_MANIFEST,
   FIGMA_ASSET_KEYS,
 } from "./asset-manifest";
 
@@ -34,5 +35,17 @@ describe("canonical Figma asset manifest", () => {
       "relic.greenDrop.sunlightMacro",
       "relic.greenDrop.wornMacro",
     ]);
+  });
+
+  it("keeps the canonical Material Memory trace map as an exact local SVG", () => {
+    const entry = CANONICAL_VECTOR_ASSET_MANIFEST[
+      "materialMemory.traceMapObjectRemoved"
+    ];
+    const file = readFileSync(join(process.cwd(), "public", entry.publicPath));
+
+    expect(file.toString("utf8")).toContain(
+      '<g id="TRACE MAP / OBJECT REMOVED">',
+    );
+    expect(createHash("sha256").update(file).digest("hex")).toBe(entry.sha256);
   });
 });

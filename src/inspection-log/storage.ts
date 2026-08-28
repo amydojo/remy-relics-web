@@ -87,6 +87,12 @@ function parseDocument(serialized: string | null): InspectionLogDocument {
   }
 }
 
+export function parseInspectionLogRecords(serialized: string | null) {
+  return Object.values(parseDocument(serialized).records).sort((left, right) =>
+    right.lastInspectedAt.localeCompare(left.lastInspectedAt),
+  );
+}
+
 export function createInspectionLogStore({
   storage,
   now = () => new Date(),
@@ -153,9 +159,13 @@ export function createInspectionLogStore({
     },
 
     list() {
-      return Object.values(readDocument().records).sort((left, right) =>
-        right.lastInspectedAt.localeCompare(left.lastInspectedAt),
-      );
+      try {
+        return parseInspectionLogRecords(
+          storage.getItem(INSPECTION_LOG_STORAGE_KEY),
+        );
+      } catch {
+        return [];
+      }
     },
 
     recordInspection(relicId: RelicId, observedStatus: RelicStatus) {

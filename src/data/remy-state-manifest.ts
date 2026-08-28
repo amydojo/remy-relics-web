@@ -1,6 +1,6 @@
 import type { FigmaNodeId } from "@/design/figma-contract";
 
-export const REMY_STATE_KEYS = ["patrol", "clipboard", "box"] as const;
+export const REMY_STATE_KEYS = ["patrol", "clipboard", "sleep", "box"] as const;
 
 export type RemyStateKey = (typeof REMY_STATE_KEYS)[number];
 
@@ -29,6 +29,14 @@ export const REMY_STATE_MANIFEST = {
     height: 160,
     publicPath: "/assets/figma/remy.clipboard.png",
     sha256: "347d48a75354945fdee5559a0e5e7802bbe1a27048f9877593a0be6d065e606b",
+  },
+  sleep: {
+    key: "sleep",
+    figmaNodeId: "580:6",
+    width: 3240,
+    height: 3240,
+    publicPath: "/assets/figma/remy.sleep.png",
+    sha256: "d6c1780c55aa01adb817d3637889d26875dc5dc85df5c27ef58d44ac8afe64c0",
   },
   box: {
     key: "box",

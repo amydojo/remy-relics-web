@@ -1,0 +1,135 @@
+.trigger,
+.close {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.trigger:focus-visible,
+.close:focus-visible,
+.menuLink:focus-visible,
+.logLink:focus-visible {
+  outline: 2px solid var(--status-active);
+  outline-offset: 4px;
+}
+
+.overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  overflow: auto;
+  background: var(--rr-surface-canvas);
+  color: var(--rr-text-primary);
+  animation: menuReveal var(--rr-motion-crossfade) linear both;
+}
+
+.sheet {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.close {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  font-size: var(--rr-type-object-size);
+  font-weight: var(--rr-type-object-weight);
+  letter-spacing: var(--rr-type-object-tracking);
+  line-height: var(--rr-type-object-line);
+}
+
+.employee {
+  position: absolute;
+  top: 23px;
+  right: 20px;
+  margin: 0;
+  color: var(--rr-text-secondary);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+}
+
+.navigation section {
+  position: absolute;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.navigation h2,
+.logGroup p {
+  margin: 0 0 7px;
+  color: var(--rr-text-secondary);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+}
+
+.aboutGroup {
+  top: 132px;
+}
+
+.notesGroup {
+  top: 330px;
+}
+
+.elsewhereGroup {
+  top: 528px;
+}
+
+.navigation .logGroup {
+  top: 708px;
+  gap: 0;
+}
+
+.menuLink,
+.disabledLink,
+.logLink {
+  color: var(--rr-text-primary);
+  font-size: var(--rr-type-action-size);
+  font-weight: var(--rr-type-action-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: var(--rr-type-action-line);
+  text-decoration: none;
+}
+
+.disabledLink {
+  color: var(--rr-text-secondary);
+  cursor: not-allowed;
+  opacity: 0.44;
+}
+
+.logLink {
+  display: block;
+  margin-top: 5px;
+}
+
+@keyframes menuReveal {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    animation-duration: var(--rr-motion-reduced);
+  }
+}
+
+@media (min-width: 720px) {
+  .sheet {
+    border-inline: 1px solid var(--rr-border-default);
+  }
+}

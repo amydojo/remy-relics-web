@@ -1,0 +1,291 @@
+.screen {
+  --log-reopen-duration: var(--rr-motion-promote);
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  height: 844px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--rr-surface-canvas);
+  color: var(--rr-text-primary);
+}
+
+.backButton,
+.menuGlyph {
+  appearance: none;
+  position: absolute;
+  z-index: 20;
+  top: 21px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: var(--rr-type-object-size);
+  font-weight: var(--rr-type-object-weight);
+  letter-spacing: var(--rr-type-object-tracking);
+  line-height: var(--rr-type-object-line);
+}
+
+.backButton {
+  left: 20px;
+}
+
+.menuGlyph {
+  left: 352px;
+}
+
+.title,
+.count,
+.localNote,
+.fieldHeading,
+.inspectedAt,
+.secondaryLabel,
+.tertiaryLabel,
+.statusChange,
+.emptyState {
+  position: absolute;
+  z-index: 12;
+  margin: 0;
+}
+
+.title {
+  top: 66px;
+  left: 20px;
+  font-size: var(--rr-type-object-size);
+  font-weight: var(--rr-type-object-weight);
+  letter-spacing: var(--rr-type-object-tracking);
+  line-height: var(--rr-type-object-line);
+}
+
+.count,
+.localNote,
+.fieldHeading,
+.inspectedAt,
+.secondaryLabel,
+.tertiaryLabel,
+.emptyState {
+  color: var(--rr-text-secondary);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  white-space: nowrap;
+}
+
+.count {
+  top: 98px;
+  left: 20px;
+}
+
+.localNote {
+  top: 122px;
+  left: 20px;
+  opacity: 0.68;
+}
+
+.fieldHeading {
+  top: 148px;
+  left: 20px;
+  opacity: 0.44;
+}
+
+.remyClipboard {
+  z-index: 14;
+  top: 82px;
+  left: 326px;
+  width: 48px;
+  height: 48px;
+}
+
+.primaryRecord {
+  position: absolute;
+  inset: 0;
+}
+
+.primaryTrace {
+  position: absolute;
+  z-index: 4;
+  top: 180px;
+  left: -26.56px;
+  display: block;
+  width: 252.52px;
+  height: 293.86px;
+  overflow: hidden;
+  background: var(--rr-surface-card);
+  transform: rotate(0.9deg);
+  transform-origin: center;
+  transition:
+    transform var(--log-reopen-duration) var(--rr-motion-ease-settle),
+    opacity var(--log-reopen-duration) linear;
+}
+
+.primaryTrace img {
+  object-fit: cover;
+  object-position: 50% 42%;
+}
+
+.primaryTrace:focus-visible,
+.reopenCue:focus-visible,
+.currentLink:focus-visible,
+.backButton:focus-visible {
+  outline: 2px solid var(--status-active);
+  outline-offset: 4px;
+}
+
+.primaryTether {
+  position: absolute;
+  z-index: 10;
+  top: 228px;
+  left: 220px;
+  width: 16px;
+  height: 1px;
+  background: var(--rr-text-primary);
+  opacity: 0.62;
+  transition: opacity var(--log-reopen-duration) linear;
+}
+
+.primaryMeta {
+  position: absolute;
+  z-index: 10;
+  top: 196px;
+  left: 236px;
+  transition: opacity var(--log-reopen-duration) linear;
+}
+
+.inspectedAt {
+  top: 260px;
+  left: 236px;
+  transition: opacity var(--log-reopen-duration) linear;
+}
+
+.reopenCue {
+  position: absolute;
+  z-index: 12;
+  top: 304px;
+  left: 236px;
+  text-decoration: none;
+  transition: opacity var(--log-reopen-duration) linear;
+}
+
+.witnessTrace {
+  position: absolute;
+  z-index: 3;
+  top: 370.24px;
+  left: 286px;
+  width: 112px;
+  height: 148px;
+  margin: 0;
+  overflow: visible;
+  opacity: 0.64;
+  transform: rotate(-0.9deg);
+}
+
+.witnessTrace > img {
+  object-fit: cover;
+  object-position: 50% 42%;
+}
+
+.witnessStamp {
+  position: absolute;
+  z-index: 5;
+  top: 75.76px;
+  left: -22px;
+  width: 126px;
+  height: 39.2px;
+  background: color-mix(in srgb, var(--rr-surface-card) 84%, transparent);
+}
+
+.secondaryLabel {
+  top: 528px;
+  left: 238px;
+  opacity: 0.52;
+}
+
+.statusChange {
+  top: 506px;
+  left: 20px;
+  color: var(--status-active);
+  font-size: var(--rr-type-meta-size);
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  white-space: nowrap;
+}
+
+.fieldPlate {
+  position: absolute;
+  z-index: 2;
+  top: 632px;
+  left: 68.36px;
+  width: 84px;
+  height: 94px;
+  margin: 0;
+  overflow: hidden;
+  opacity: 0.28;
+  transform: rotate(1deg);
+}
+
+.fieldPlate img {
+  object-fit: cover;
+  object-position: 50% 43%;
+}
+
+.tertiaryLabel {
+  top: 648px;
+  left: 174px;
+  opacity: 0.42;
+}
+
+.emptyState {
+  top: 196px;
+  left: 20px;
+  opacity: 0.62;
+}
+
+.currentLink {
+  position: absolute;
+  z-index: 20;
+  top: 790px;
+  left: 20px;
+  font-size: var(--rr-type-action-size);
+  font-weight: var(--rr-type-action-weight);
+  letter-spacing: var(--rr-type-action-tracking);
+  line-height: var(--rr-type-action-line);
+  text-decoration: none;
+}
+
+.screen[data-reopening="true"] .primaryTrace {
+  opacity: 0.92;
+  transform: translate3d(7px, -46px, 0) rotate(0.5deg) scale(1.145);
+}
+
+.screen[data-reopening="true"] .primaryTether,
+.screen[data-reopening="true"] .primaryMeta,
+.screen[data-reopening="true"] .inspectedAt,
+.screen[data-reopening="true"] .reopenCue {
+  opacity: 0;
+}
+
+.screen[data-motion="reduced"][data-reopening="true"] .primaryTrace {
+  opacity: 0;
+  transform: rotate(0.9deg);
+}
+
+@media (max-width: 350px) {
+  .menuGlyph {
+    right: 20px;
+    left: auto;
+  }
+
+  .primaryMeta,
+  .inspectedAt,
+  .reopenCue {
+    left: 220px;
+  }
+
+  .witnessTrace {
+    left: 270px;
+  }
+}

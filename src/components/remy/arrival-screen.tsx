@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 
 import { RemyState, StatusSignal } from "@/components/remy/relic-primitives";
+import { SiteMenu } from "@/components/remy/site-menu";
 import { getCanonicalAsset } from "@/data/asset-manifest";
 import { MOTION_CONTRACT } from "@/motion/contract";
 import { usePrefersReducedMotion } from "@/motion/use-prefers-reduced-motion";
@@ -68,7 +69,7 @@ export function ArrivalScreen() {
 
       <p className={styles.brand}>REMY RELICS</p>
       <StatusSignal className={styles.brandSignal} />
-      <span aria-hidden className={styles.menuGlyph}>☰</span>
+      <SiteMenu className={styles.menuGlyph} />
       <p className={styles.archiveStatus}>
         PUBLIC ARCHIVE / ACTIVE
         <br />

@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="208" height="266" viewBox="0 0 208 266" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="TRACE MAP / OBJECT REMOVED">
+<g id="Contact Impression / Teardrop">
+<path id="Vector" d="M103 7C76 38 56 70 52 111C47 160 67 201 102 214C138 204 160 160 155 109C151 68 128 35 103 7Z" stroke="#C9C0B3" stroke-width="1.2" stroke-dasharray="5 7"/>
+<path id="Vector_2" d="M102 29C82 53 68 79 67 112C65 151 79 181 102 192C127 183 142 151 139 111C136 79 121 52 102 29Z" stroke="#C9C0B3" stroke-width="0.8"/>
+<path id="Vector_3" d="M87 4L102 18L117 4" stroke="#C9C0B3" stroke-width="0.8"/>
+<path id="Vector_4" d="M80 165C87 179 94 186 102 190C111 186 120 178 126 164" stroke="#C9C0B3" stroke-width="1.1"/>
+</g>
+<ellipse id="Residue Halo" opacity="0.035" cx="113.142" cy="116.039" rx="59" ry="77" transform="rotate(-8 113.142 116.039)" fill="#C9C0B3"/>
+<circle id="Contact Point / 1" opacity="0.5" cx="50" cy="105" r="2" fill="#575149"/>
+<circle id="Contact Point / 2" opacity="0.5" cx="150" cy="118" r="2" fill="#575149"/>
+<circle id="Contact Point / 3" opacity="0.5" cx="93" cy="208" r="2" fill="#575149"/>
+<line id="Pressure Tick / L" opacity="0.7" x1="20" y1="111.5" x2="36" y2="111.5" stroke="#C9C0B3"/>
+<line id="Pressure Tick / R" opacity="0.7" x1="172" y1="123.5" x2="188" y2="123.5" stroke="#C9C0B3"/>
+</g>
+</svg>

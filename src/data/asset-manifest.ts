@@ -179,3 +179,20 @@ export const CANONICAL_ASSET_MANIFEST = {
 export function getCanonicalAsset(key: FigmaAssetKey) {
   return CANONICAL_ASSET_MANIFEST[key];
 }
+
+export const CANONICAL_VECTOR_ASSET_MANIFEST = {
+  "materialMemory.traceMapObjectRemoved": {
+    key: "materialMemory.traceMapObjectRemoved",
+    figmaNodeId: "645:134" as FigmaNodeId,
+    width: 208,
+    height: 266,
+    publicPath: "/assets/figma/material-memory.trace-map.svg",
+    sha256: "dff58ba0aa1be03d309c50c416779b9bc01e310664ff87013888c817c0722faa",
+  },
+} as const;
+
+export type CanonicalVectorAssetKey = keyof typeof CANONICAL_VECTOR_ASSET_MANIFEST;
+
+export function getCanonicalVectorAsset(key: CanonicalVectorAssetKey) {
+  return CANONICAL_VECTOR_ASSET_MANIFEST[key];
+}
