@@ -3,6 +3,9 @@ export const MOTION_EASING = "cubic-bezier(.22,1,.36,1)" as const;
 export const MOTION_CONTRACT = {
   arrivalRevealMs: 240,
   currentToInspectionMs: 260,
+  objectLiftMs: 80,
+  objectTravelMs: 180,
+  mediaDecodeBudgetMs: 80,
   fieldPromotionMs: 260,
   creamToBlackCrossfadeMs: 180,
   evidenceSnapMs: 220,
