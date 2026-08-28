@@ -29,6 +29,7 @@ import {
   formatRelicPrice,
 } from "@/data/golden-path";
 import type { Relic } from "@/data/relic";
+import { getRelicObjectMedia } from "@/data/relic-object-media";
 import { createBrowserInspectionLogStore } from "@/inspection-log/storage";
 import { MOTION_CONTRACT } from "@/motion/contract";
 import { usePrefersReducedMotion } from "@/motion/use-prefers-reduced-motion";
@@ -76,6 +77,7 @@ export function RelicExperience({
   const transferRevealStarted = useRef(false);
   const handoff = createEtsyHandoff(relic);
   const price = relic.status === "available" ? formatRelicPrice(relic) : null;
+  const objectMedia = getRelicObjectMedia(relic);
   const heroAsset = getCanonicalAsset(relic.assets.hero);
   const wornAsset = getCanonicalAsset(
     relic.assets.evidence[2]?.assetKey ?? relic.assets.hero,
@@ -300,29 +302,37 @@ export function RelicExperience({
             >
               {relic.assets.evidence.map((evidence, index) => {
                 const asset = getCanonicalAsset(evidence.assetKey);
+                const isObjectHero = index === 0;
 
                 return (
                   <div
                     className={styles.inspectionSlide}
                     data-evidence-index={evidence.index}
+                    data-object-media-key={
+                      isObjectHero ? objectMedia.canonicalAssetKey : undefined
+                    }
+                    data-relic-id={isObjectHero ? objectMedia.relicId : undefined}
+                    data-testid={isObjectHero ? "inspection-hero" : undefined}
                     key={`${evidence.index}-${evidence.label}`}
                     style={{ width: `${100 / evidenceCount}%` }}
                   >
                     <Image
-                      alt={index === 0 ? `${relic.name} resting in sunlight` : ""}
+                      alt={isObjectHero ? `${relic.name} resting in sunlight` : ""}
                       className={
-                        index === 0
+                        isObjectHero
                           ? styles.fullObjectImage
                           : index === 1
                             ? styles.surfaceImage
                             : styles.wornImage
                       }
                       fill
-                      loading={
-                        evidence.assetKey === relic.assets.hero ? "eager" : "lazy"
-                      }
+                      loading={isObjectHero ? "eager" : "lazy"}
                       sizes="(max-width: 390px) calc(100vw - 32px), 358px"
-                      src={asset.publicPath}
+                      src={
+                        isObjectHero
+                          ? objectMedia.masterAsset.publicPath
+                          : asset.publicPath
+                      }
                     />
                   </div>
                 );
