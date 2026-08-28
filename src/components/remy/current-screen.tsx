@@ -90,8 +90,10 @@ export function CurrentScreen() {
   const transitionInFlight = useRef(false);
   const promoting = objectTransition !== "idle";
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    mounted.current = true;
+
+    return () => {
       mounted.current = false;
       if (navigationTimer.current !== null) {
         clearTimeout(navigationTimer.current);
@@ -99,9 +101,8 @@ export function CurrentScreen() {
       if (phaseTimer.current !== null) {
         clearTimeout(phaseTimer.current);
       }
-    },
-    [],
-  );
+    };
+  }, []);
 
   function scheduleNavigation(delayMs: number) {
     navigationTimer.current = setTimeout(
