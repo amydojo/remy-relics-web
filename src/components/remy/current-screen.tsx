@@ -11,6 +11,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { flushSync } from "react-dom";
 
 import {
   BottomNav,
@@ -85,7 +86,6 @@ export function CurrentScreen() {
   const inspectionPreloadRef = useRef<HTMLImageElement | null>(null);
   const navigationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const phaseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const travelFrame = useRef<number | null>(null);
   const mounted = useRef(true);
   const transitionInFlight = useRef(false);
   const promoting = objectTransition !== "idle";
@@ -98,9 +98,6 @@ export function CurrentScreen() {
       }
       if (phaseTimer.current !== null) {
         clearTimeout(phaseTimer.current);
-      }
-      if (travelFrame.current !== null) {
-        cancelAnimationFrame(travelFrame.current);
       }
     },
     [],
@@ -148,17 +145,19 @@ export function CurrentScreen() {
       }
 
       const destination = getInspectionHeroRect(screen);
-      setFlip(getFlipTransform(source, destination));
-      setObjectTransition("travel-prep");
+      const nextFlip = getFlipTransform(source, destination);
 
-      travelFrame.current = requestAnimationFrame(() => {
-        if (!mounted.current) {
-          return;
-        }
-
-        setObjectTransition("traveling");
-        scheduleNavigation(MOTION_CONTRACT.objectTravelMs);
+      flushSync(() => {
+        setFlip(nextFlip);
+        setObjectTransition("travel-prep");
       });
+
+      void activeObjectRef.current?.offsetWidth;
+
+      flushSync(() => {
+        setObjectTransition("traveling");
+      });
+      scheduleNavigation(MOTION_CONTRACT.objectTravelMs);
     }, MOTION_CONTRACT.objectLiftMs);
   }
 
