@@ -26,12 +26,20 @@ import {
   GREEN_DROP_LARIAT,
   GREEN_DROP_LARIAT_SLUG,
 } from "@/data/golden-path";
+import { getRelicObjectMedia } from "@/data/relic-object-media";
 import { MOTION_CONTRACT } from "@/motion/contract";
+import { confirmDecodedImageWithin } from "@/motion/image-readiness";
+import {
+  flipTransformVariables,
+  getFlipTransform,
+  getInspectionHeroRect,
+  type FlipTransform,
+} from "@/motion/object-lift";
 import { usePrefersReducedMotion } from "@/motion/use-prefers-reduced-motion";
 
 import styles from "./current-screen.module.css";
 
-const greenDrop = getCanonicalAsset("relic.greenDrop.sunlightMacro");
+const greenDropMedia = getRelicObjectMedia(GREEN_DROP_LARIAT);
 const evilEye = getCanonicalAsset("relic.evilEyeHex.macroBlackWhite");
 const clearFound = getCanonicalAsset("relic.clearFoundTrapezoid.heroBokeh");
 const redWindow = getCanonicalAsset("relic.redWindowRect.macroBokeh");
@@ -51,6 +59,15 @@ type DragOrigin = {
   y: number;
 };
 
+type ObjectTransitionPhase =
+  | "idle"
+  | "lifting"
+  | "travel-prep"
+  | "traveling"
+  | "dissolving";
+
+const IDENTITY_FLIP: FlipTransform = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
+
 function isModifiedClick(event: MouseEvent<HTMLAnchorElement>) {
   return event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
 }
@@ -59,18 +76,91 @@ export function CurrentScreen() {
   const router = useRouter();
   const prefersReducedMotion = usePrefersReducedMotion();
   const [drag, setDrag] = useState({ x: 0, y: 0 });
-  const [promoting, setPromoting] = useState(false);
+  const [objectTransition, setObjectTransition] =
+    useState<ObjectTransitionPhase>("idle");
+  const [flip, setFlip] = useState<FlipTransform>(IDENTITY_FLIP);
   const dragOrigin = useRef<DragOrigin | null>(null);
+  const screenRef = useRef<HTMLElement | null>(null);
+  const activeObjectRef = useRef<HTMLAnchorElement | null>(null);
+  const inspectionPreloadRef = useRef<HTMLImageElement | null>(null);
   const navigationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const phaseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const travelFrame = useRef<number | null>(null);
+  const mounted = useRef(true);
+  const transitionInFlight = useRef(false);
+  const promoting = objectTransition !== "idle";
 
   useEffect(
     () => () => {
+      mounted.current = false;
       if (navigationTimer.current !== null) {
         clearTimeout(navigationTimer.current);
+      }
+      if (phaseTimer.current !== null) {
+        clearTimeout(phaseTimer.current);
+      }
+      if (travelFrame.current !== null) {
+        cancelAnimationFrame(travelFrame.current);
       }
     },
     [],
   );
+
+  function scheduleNavigation(delayMs: number) {
+    navigationTimer.current = setTimeout(
+      () => router.push(`/relic/${GREEN_DROP_LARIAT_SLUG}`, { scroll: false }),
+      delayMs,
+    );
+  }
+
+  function dissolveToInspection() {
+    if (!mounted.current) {
+      return;
+    }
+
+    setObjectTransition("dissolving");
+    scheduleNavigation(MOTION_CONTRACT.reducedMotionMs);
+  }
+
+  async function beginObjectLift() {
+    const mediaReady = await confirmDecodedImageWithin(
+      inspectionPreloadRef.current,
+      MOTION_CONTRACT.mediaDecodeBudgetMs,
+    );
+
+    if (!mounted.current) {
+      return;
+    }
+
+    if (!mediaReady) {
+      dissolveToInspection();
+      return;
+    }
+
+    setObjectTransition("lifting");
+    phaseTimer.current = setTimeout(() => {
+      const source = activeObjectRef.current?.getBoundingClientRect();
+      const screen = screenRef.current?.getBoundingClientRect();
+
+      if (source === undefined || screen === undefined) {
+        dissolveToInspection();
+        return;
+      }
+
+      const destination = getInspectionHeroRect(screen);
+      setFlip(getFlipTransform(source, destination));
+      setObjectTransition("travel-prep");
+
+      travelFrame.current = requestAnimationFrame(() => {
+        if (!mounted.current) {
+          return;
+        }
+
+        setObjectTransition("traveling");
+        scheduleNavigation(MOTION_CONTRACT.objectTravelMs);
+      });
+    }, MOTION_CONTRACT.objectLiftMs);
+  }
 
   function beginDrag(event: PointerEvent<HTMLElement>) {
     const target = event.target;
@@ -119,19 +209,20 @@ export function CurrentScreen() {
   }
 
   function inspectRelic(event: MouseEvent<HTMLAnchorElement>) {
-    if (isModifiedClick(event) || promoting) {
+    if (isModifiedClick(event) || transitionInFlight.current) {
       return;
     }
 
     event.preventDefault();
+    transitionInFlight.current = true;
     setDrag({ x: 0, y: 0 });
-    setPromoting(true);
-    navigationTimer.current = setTimeout(
-      () => router.push(`/relic/${GREEN_DROP_LARIAT_SLUG}`, { scroll: false }),
-      prefersReducedMotion
-        ? MOTION_CONTRACT.reducedMotionMs
-        : MOTION_CONTRACT.currentToInspectionMs,
-    );
+
+    if (prefersReducedMotion) {
+      dissolveToInspection();
+      return;
+    }
+
+    void beginObjectLift();
   }
 
   const motionStyle = {
@@ -141,19 +232,22 @@ export function CurrentScreen() {
     "--drag-mid-y": `${drag.y * MOTION_CONTRACT.depthMultipliers.mid}px`,
     "--drag-far-x": `${drag.x * MOTION_CONTRACT.depthMultipliers.far}px`,
     "--drag-far-y": `${drag.y * MOTION_CONTRACT.depthMultipliers.far}px`,
+    ...flipTransformVariables(flip),
   } as CSSProperties;
 
   return (
     <main
       aria-busy={promoting}
-      className={`${styles.screen} ${promoting ? styles.promoting : ""}`}
+      className={styles.screen}
       data-motion={prefersReducedMotion ? "reduced" : "full"}
       data-node-id="543:2"
+      data-object-transition={objectTransition}
       data-screen="current"
       onPointerCancel={endDrag}
       onPointerDown={beginDrag}
       onPointerMove={moveField}
       onPointerUp={endDrag}
+      ref={screenRef}
       style={motionStyle}
     >
       <header className={styles.chrome}>
@@ -171,9 +265,12 @@ export function CurrentScreen() {
       <Link
         aria-label="Inspect Green Drop Lariat"
         className={styles.activeObject}
+        data-object-media-key={greenDropMedia.canonicalAssetKey}
+        data-relic-id={greenDropMedia.relicId}
         data-testid="active-relic"
         href={`/relic/${GREEN_DROP_LARIAT_SLUG}`}
         onClick={inspectRelic}
+        ref={activeObjectRef}
         scroll={false}
       >
         <Image
@@ -181,9 +278,20 @@ export function CurrentScreen() {
           fill
           loading="eager"
           sizes="(max-width: 390px) 68vw, 265px"
-          src={greenDrop.publicPath}
+          src={greenDropMedia.masterAsset.publicPath}
         />
       </Link>
+
+      <div aria-hidden className={styles.inspectionPreload}>
+        <Image
+          alt=""
+          fill
+          loading="eager"
+          ref={inspectionPreloadRef}
+          sizes="(max-width: 390px) calc(100vw - 32px), 358px"
+          src={greenDropMedia.masterAsset.publicPath}
+        />
+      </div>
 
       <div className={`${styles.trace} ${styles.eyeTrace}`}>
         <Image alt="" fill loading="eager" sizes="120px" src={evilEye.publicPath} />
