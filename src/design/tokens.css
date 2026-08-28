@@ -46,6 +46,8 @@
   --rr-motion-ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
   --rr-motion-arrival: 240ms;
   --rr-motion-promote: 260ms;
+  --rr-motion-object-lift: 80ms;
+  --rr-motion-object-travel: 180ms;
   --rr-motion-crossfade: 180ms;
   --rr-motion-evidence-snap: 220ms;
   --rr-motion-record-hold: 120ms;
@@ -65,6 +67,8 @@
   :root {
     --rr-motion-arrival: var(--rr-motion-reduced);
     --rr-motion-promote: var(--rr-motion-reduced);
+    --rr-motion-object-lift: 0ms;
+    --rr-motion-object-travel: var(--rr-motion-reduced);
     --rr-motion-crossfade: var(--rr-motion-reduced);
     --rr-motion-evidence-snap: var(--rr-motion-reduced);
     --rr-motion-record-hold: 0ms;
