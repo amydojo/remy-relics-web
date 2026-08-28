@@ -38,8 +38,19 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Chromium + WebKit
+        run: npx playwright install --with-deps chromium webkit
 
-      - name: Browser proof
+      - name: Chromium regression
         run: npm run test:e2e -- --project=mobile-390
+
+      - name: Playwright WebKit focused proof
+        run: npx playwright test tests/e2e/object-physics.spec.ts tests/e2e/object-physics-closeout.spec.ts --project=webkit-390
+
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: object-physics-evidence-${{ github.sha }}
+          path: test-results
+          if-no-files-found: ignore

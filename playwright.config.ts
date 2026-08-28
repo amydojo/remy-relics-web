@@ -43,6 +43,15 @@ export default defineConfig({
         isMobile: true,
       },
     },
+    {
+      name: "webkit-390",
+      testIgnore: /touch\.spec\.ts/,
+      use: {
+        ...devices["Desktop Safari"],
+        viewport: { width: 390, height: 844 },
+        deviceScaleFactor: 1,
+      },
+    },
   ],
   webServer: {
     command: `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
