@@ -132,3 +132,37 @@ test("Canonical menu resting state", async ({ page }) => {
     fullPage: true,
   });
 });
+
+
+test("Transferred permanent record canonical state", async ({ page }) => {
+  await page.setExtraHTTPHeaders({
+    "x-remy-e2e-commerce-state": "transferred",
+  });
+  await page.goto("/relic/green-drop-lariat?view=record");
+  await settleImages(page);
+
+  await expect(page).toHaveScreenshot("v1-2-transferred-record.png", {
+    fullPage: true,
+  });
+});
+
+test("Transferred Archive canonical state", async ({ page }) => {
+  await page.setExtraHTTPHeaders({
+    "x-remy-e2e-commerce-state": "transferred",
+  });
+  await page.goto("/archive");
+  await settleImages(page);
+
+  await expect(page).toHaveScreenshot("v1-2-transferred-archive.png", {
+    fullPage: true,
+  });
+});
+
+test("Verified transfer confirmation canonical state", async ({ page }) => {
+  await page.goto("/transfer/confirmation?session_id=e2e-transferred");
+  await settleImages(page);
+
+  await expect(page).toHaveScreenshot("v1-2-transfer-confirmation.png", {
+    fullPage: true,
+  });
+});
