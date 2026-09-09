@@ -40,7 +40,7 @@ describe("Stripe Checkout contract", () => {
     });
 
     expect(params.mode).toBe("payment");
-    expect(params.ui_mode).toBe("hosted");
+    expect(params.ui_mode).toBe("hosted_page");
     expect(params.payment_method_types).toEqual(["card"]);
     expect(params.shipping_address_collection?.allowed_countries).toEqual([
       ...CHECKOUT_ALLOWED_COUNTRIES,
