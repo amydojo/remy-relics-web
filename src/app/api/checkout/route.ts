@@ -26,6 +26,16 @@ export async function POST(request: Request) {
     return Response.json({ error: "invalid_relic" }, { status: 400 });
   }
 
+  if (process.env.REMY_COMMERCE_E2E_FIXTURE === "1") {
+    return Response.json(
+      { checkoutUrl: "https://checkout.stripe.test/session" },
+      {
+        headers: { "Cache-Control": "no-store" },
+        status: 200,
+      },
+    );
+  }
+
   try {
     const checkout = await createHostedCheckout(body.slug);
 
