@@ -261,20 +261,10 @@ test("reduced motion removes field parallax and uses the 120ms contract", async 
   ).toBe(".12s");
 });
 
-test("Acquire posts only the relic slug and follows the server checkout URL", async ({
+test("Acquire posts only the relic slug and follows the real checkout route response contract", async ({
   context,
   page,
 }) => {
-  let checkoutBody: unknown = null;
-
-  await context.route("**/api/checkout", async (route) => {
-    checkoutBody = route.request().postDataJSON();
-    await route.fulfill({
-      contentType: "application/json",
-      status: 200,
-      body: JSON.stringify({ url: "https://checkout.stripe.test/session" }),
-    });
-  });
   await context.route("https://checkout.stripe.test/**", async (route) => {
     await route.fulfill({
       contentType: "text/html",
@@ -292,9 +282,18 @@ test("Acquire posts only the relic slug and follows the server checkout URL", as
     etsyUrl,
   );
 
+  const checkoutRequestPromise = page.waitForRequest(
+    (request) =>
+      request.url().endsWith("/api/checkout") && request.method() === "POST",
+  );
+
   await acquire.click();
+
+  const checkoutRequest = await checkoutRequestPromise;
+  expect(checkoutRequest.postDataJSON()).toEqual({
+    slug: "green-drop-lariat",
+  });
   await expect(page).toHaveURL("https://checkout.stripe.test/session");
-  expect(checkoutBody).toEqual({ slug: "green-drop-lariat" });
 });
 
 test("transferred commerce truth removes the relic from Current and moves its permanent record into Archive", async ({
