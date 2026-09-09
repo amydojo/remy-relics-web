@@ -67,6 +67,8 @@ export function RelicExperience({
   const [mode, setMode] = useState<ExperienceMode>(() =>
     commerce.status === "transferred" ? "record" : initialMode,
   );
+  const activeMode =
+    commerce.status === "transferred" ? "record" : mode;
   const [phase, setPhase] = useState<TransitionPhase>("rest");
   const [inspectionEvidence, setInspectionEvidence] = useState(0);
   const [recordEvidence, setRecordEvidence] = useState(0);
@@ -114,12 +116,6 @@ export function RelicExperience({
       createBrowserInspectionLogStore().recordInspection(relic.id, commerce.status);
     }
   }, [commerce.status, relic.id]);
-
-  useEffect(() => {
-    if (commerce.status === "transferred") {
-      setMode("record");
-    }
-  }, [commerce.status]);
 
   useEffect(() => {
     if (commerce.status !== "transferred" || transferRevealStarted.current) {
@@ -336,13 +332,13 @@ export function RelicExperience({
     <main
       className={styles.experience}
       data-motion={prefersReducedMotion ? "reduced" : "full"}
-      data-node-id={mode === "inspection" ? "544:31" : "545:56"}
-      data-screen={mode}
+      data-node-id={activeMode === "inspection" ? "544:31" : "545:56"}
+      data-screen={activeMode}
       data-status={commerce.status}
       data-transfer-reveal={transferReveal}
       data-transition={phase}
     >
-      {mode === "inspection" && commerce.status !== "transferred" ? (
+      {activeMode === "inspection" ? (
         <>
           <h1 className={styles.visuallyHidden}>{displayLabel}</h1>
           <header className={`${styles.inspectionHeader} ${styles.inspectionFade}`}>
