@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { CHECKOUT_TTL_SECONDS } from "@/commerce/checkout-contract";
 import { getCommerceDb } from "@/commerce/db";
-import type { CommerceRelicRecord } from "@/commerce/model";
+import type { CommerceRelicRecord, FulfillmentStatus, PaymentStatus } from "@/commerce/model";
 import {
   RELEASE_RESERVATION_SQL,
   RESERVE_ONE_OF_ONE_SQL,
@@ -31,6 +31,19 @@ export type PendingCheckout = {
   orderId: string;
   relic: CommerceRelicRecord;
   reservationToken: string;
+};
+
+export type PublicTransferConfirmation = {
+  amountCents: number;
+  currency: "USD";
+  fulfillmentStatus: FulfillmentStatus;
+  orderId: string;
+  paymentStatus: PaymentStatus;
+  relicId: RelicId;
+  relicStatus: CommerceRelicRecord["status"];
+  slug: RelicSlug;
+  title: string;
+  transferDate: string | null;
 };
 
 export class RelicNotFoundError extends Error {
@@ -270,4 +283,96 @@ export async function cancelPendingOrderBeforeStripeSession(
       ON CONFLICT (event_key) DO NOTHING
     `;
   });
+}
+
+
+export async function getCommerceRelicBySlug(
+  slug: string,
+): Promise<CommerceRelicRecord | null> {
+  const sql = getCommerceDb();
+  const rows = await sql`
+    SELECT
+      id,
+      relic_id,
+      slug,
+      title,
+      price_cents,
+      currency,
+      status,
+      quantity,
+      stripe_product_id,
+      stripe_price_id,
+      etsy_url,
+      reservation_token,
+      reserved_until,
+      transfer_date
+    FROM commerce_relics
+    WHERE slug = ${slug}
+    LIMIT 1
+  `;
+
+  const row = rows[0] as CommerceRelicRow | undefined;
+  return row ? mapRelic(row) : null;
+}
+
+export async function getTransferConfirmationBySessionId(
+  sessionId: string,
+): Promise<PublicTransferConfirmation | null> {
+  const normalized = sessionId.trim();
+
+  if (!normalized) {
+    return null;
+  }
+
+  const sql = getCommerceDb();
+  const rows = await sql`
+    SELECT
+      o.id AS order_id,
+      o.amount_cents,
+      o.currency,
+      o.payment_status,
+      o.fulfillment_status,
+      r.relic_id,
+      r.slug,
+      r.title,
+      r.status AS relic_status,
+      r.transfer_date
+    FROM commerce_orders AS o
+    JOIN commerce_relics AS r
+      ON r.relic_id = o.relic_id
+    WHERE o.stripe_checkout_session_id = ${normalized}
+    LIMIT 1
+  `;
+
+  const row = rows[0] as
+    | {
+        amount_cents: number;
+        currency: string;
+        fulfillment_status: FulfillmentStatus;
+        order_id: string;
+        payment_status: PaymentStatus;
+        relic_id: RelicId;
+        relic_status: CommerceRelicRecord["status"];
+        slug: RelicSlug;
+        title: string;
+        transfer_date: Date | string | null;
+      }
+    | undefined;
+
+  if (!row) {
+    return null;
+  }
+
+  return {
+    amountCents: row.amount_cents,
+    currency: "USD",
+    fulfillmentStatus: row.fulfillment_status,
+    orderId: row.order_id,
+    paymentStatus: row.payment_status,
+    relicId: row.relic_id,
+    relicStatus: row.relic_status,
+    slug: row.slug,
+    title: row.title,
+    transferDate: isoDate(row.transfer_date),
+  };
 }

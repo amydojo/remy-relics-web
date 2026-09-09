@@ -97,6 +97,11 @@
   pointer-events: none;
 }
 
+.traceLink {
+  pointer-events: auto;
+  text-decoration: none;
+}
+
 .traceOne {
   top: 145px;
   left: -30px;
@@ -233,6 +238,21 @@
   opacity: 0.5;
 }
 
+.traceFourDate {
+  position: absolute;
+  z-index: 20;
+  top: 658px;
+  left: 230px;
+  margin: 0;
+  color: var(--rr-text-secondary);
+  font-size: 9px;
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  opacity: 0.42;
+  white-space: nowrap;
+}
+
 .archiveNote {
   top: 720px;
   left: 16px;
@@ -319,6 +339,12 @@
 
   .traceFourLabel {
     top: 648px;
+    right: 27%;
+    left: auto;
+  }
+
+  .traceFourDate {
+    top: 664px;
     right: 27%;
     left: auto;
   }

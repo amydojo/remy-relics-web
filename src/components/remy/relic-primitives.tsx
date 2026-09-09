@@ -20,9 +20,10 @@ export function RelicMeta({
   className?: string;
   displayName: string;
   relicId: string;
-  status?: RelicStatus | "inspected";
+  status?: RelicStatus | "reserved" | "unavailable" | "inspected";
 }) {
-  const statusLabel = status.toUpperCase();
+  const statusLabel =
+    status === "reserved" ? "PROCESSING" : status.toUpperCase();
 
   return (
     <div className={`${styles.relicMeta} ${className ?? ""}`}>
@@ -57,10 +58,8 @@ export function SpatialCue({
 
 export function BottomNav({
   active = "current",
-  handoff,
 }: {
   active?: "archive" | "current" | "neutral";
-  handoff: EtsyHandoff;
 }) {
   return (
     <nav aria-label="Browse" className={styles.bottomNav}>
@@ -80,14 +79,12 @@ export function BottomNav({
         {active === "archive" ? <StatusSignal /> : null}
         ARCHIVE
       </Link>
-      <a
+      <Link
         className={styles.navMuted}
-        href={handoff.href}
-        rel={handoff.rel}
-        target={handoff.target}
+        href="/log"
       >
-        ETSY ↗
-      </a>
+        LOG
+      </Link>
     </nav>
   );
 }

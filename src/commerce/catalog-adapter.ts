@@ -55,3 +55,18 @@ export function formatCanonicalPrice(
     maximumFractionDigits: commerce.priceCents % 100 === 0 ? 0 : 2,
   }).format(commerce.priceCents / 100);
 }
+
+
+export function formatCanonicalDate(value: string | null) {
+  if (value === null) {
+    return null;
+  }
+
+  const [year, month, day] = value.split("-");
+
+  if (!year || !month || !day) {
+    return value;
+  }
+
+  return `${month}.${day}.${year.slice(-2)}`;
+}
