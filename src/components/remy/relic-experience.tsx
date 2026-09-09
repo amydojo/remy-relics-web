@@ -278,9 +278,9 @@ export function RelicExperience({
       const url =
         typeof payload === "object" &&
         payload !== null &&
-        "url" in payload &&
-        typeof payload.url === "string"
-          ? payload.url
+        "checkoutUrl" in payload &&
+        typeof payload.checkoutUrl === "string"
+          ? payload.checkoutUrl
           : null;
 
       if (url === null || !url.startsWith("https://")) {
