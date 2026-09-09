@@ -452,6 +452,7 @@ export async function processStripeWebhookEvent(event: Stripe.Event) {
         "canceled",
       );
 
+    case "refund.created":
     case "refund.updated":
       return applyRefund(event, event.data.object as Stripe.Refund);
 
