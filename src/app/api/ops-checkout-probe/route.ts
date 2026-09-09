@@ -19,6 +19,14 @@ export async function GET() {
     if (error instanceof RelicUnavailableError) {
       return Response.json({ created: false, error: "relic_unavailable" }, { status: 409 });
     }
-    throw error;
+    return Response.json(
+      {
+        created: false,
+        error: "probe_failed",
+        errorName: error instanceof Error ? error.name : "unknown",
+        errorMessage: error instanceof Error ? error.message : "unknown",
+      },
+      { status: 500, headers: { "Cache-Control": "no-store" } },
+    );
   }
 }
