@@ -34,6 +34,13 @@
   transition: opacity 100ms linear;
 }
 
+.fieldCopy {
+  position: absolute;
+  z-index: 12;
+  inset: 0;
+  pointer-events: none;
+}
+
 .title,
 .menuGlyph {
   position: absolute;
