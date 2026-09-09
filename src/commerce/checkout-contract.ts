@@ -64,7 +64,7 @@ export function buildCheckoutSessionParams(input: {
       allowed_countries: [...CHECKOUT_ALLOWED_COUNTRIES],
     },
     success_url: `${input.siteOrigin}/transfer/confirmation?session_id={CHECKOUT_SESSION_ID}`,
-    ui_mode: "hosted",
+    ui_mode: "hosted_page",
   };
 }
 
