@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { GREEN_DROP_LARIAT } from "@/data/golden-path";
 
 import {
+  formatCanonicalDate,
   formatCanonicalPrice,
   resolveRelicWithCommerceTruth,
 } from "./catalog-adapter";
@@ -46,6 +47,11 @@ describe("commerce catalog adapter", () => {
     expect(resolved.commerce.purchasable).toBe(false);
     expect(resolved.commerce.priceCents).toBeNull();
     expect(formatCanonicalPrice(resolved.commerce)).toBeNull();
+  });
+
+  it("formats canonical transfer dates without timezone inference", () => {
+    expect(formatCanonicalDate("2026-09-09")).toBe("09.09.26");
+    expect(formatCanonicalDate(null)).toBeNull();
   });
 
   it("rejects mismatched presentation and commerce identities", () => {

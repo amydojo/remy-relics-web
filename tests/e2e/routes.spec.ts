@@ -21,12 +21,17 @@ test("Archive preserves the canonical transferred trace field", async ({ page })
   const archive = page.getByTestId("archive-field");
   await expectNoRuntimeError(page);
   await expect(archive).toHaveAttribute("data-node-id", "547:65");
-  await expect(page.getByText("12 TRANSFERRED", { exact: true })).toBeVisible();
-  await expect(page.getByLabel("Transferred relic traces").locator("figure")).toHaveCount(4);
-  await expect(page.getByLabel("Transferred", { exact: true })).toHaveCount(4);
+  await expect(page.getByText("11 TRANSFERRED", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Transferred relic traces").locator("figure")).toHaveCount(3);
+  await expect(page.getByLabel("Transferred", { exact: true })).toHaveCount(3);
+  await expect(page.getByTestId("archive-green-drop")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "ARCHIVE" })).toHaveAttribute(
     "aria-current",
     "page",
+  );
+  await expect(page.getByRole("link", { name: "LOG", exact: true })).toHaveAttribute(
+    "href",
+    "/log",
   );
   expect(await archive.evaluate((node) => getComputedStyle(node).display)).not.toBe(
     "grid",
@@ -152,9 +157,14 @@ test("Arrival → Current → Inspection → Full Record preserves the golden pa
   await expect(page.locator("main")).toHaveAttribute("data-screen", "record");
   await expect(page.getByRole("heading", { name: "GREEN TEARDROP BEND" })).toBeVisible();
   await expect(page.getByText("RESIN / FOUND COMPONENTS", { exact: true })).toBeVisible();
-  await expect(page.getByTestId("acquire-record")).toHaveAttribute("href", etsyUrl);
-  await expect(page.getByTestId("acquire-record")).toHaveAttribute("target", "_blank");
-  await expect(page.getByText("secure checkout via Etsy ↗", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("acquire-record")).toHaveText(
+    "ACQUIRE RELIC — $78",
+  );
+  await expect(page.getByText("secure checkout", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("etsy-fallback-record")).toHaveAttribute(
+    "href",
+    etsyUrl,
+  );
   expect(browserErrors).toEqual([]);
 });
 
@@ -251,23 +261,107 @@ test("reduced motion removes field parallax and uses the 120ms contract", async 
   ).toBe(".12s");
 });
 
-test("Acquire immediately opens the exact canonical Etsy listing", async ({
+test("Acquire posts only the relic slug and follows the server checkout URL", async ({
   context,
   page,
 }) => {
-  await context.route(`${etsyUrl}**`, async (route) => {
-    await route.fulfill({ contentType: "text/html", body: "<title>Etsy handoff</title>" });
+  let checkoutBody: unknown = null;
+
+  await context.route("**/api/checkout", async (route) => {
+    checkoutBody = route.request().postDataJSON();
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify({ url: "https://checkout.stripe.test/session" }),
+    });
   });
+  await context.route("https://checkout.stripe.test/**", async (route) => {
+    await route.fulfill({
+      contentType: "text/html",
+      body: "<title>Stripe sandbox handoff</title>",
+    });
+  });
+
   await enterInspection(page);
 
   const acquire = page.getByTestId("acquire-inspection");
-  await expect(acquire).toHaveAttribute("href", etsyUrl);
-  await expect(acquire).toHaveAttribute("rel", "external noopener noreferrer");
-  const popupPromise = context.waitForEvent("page");
+  await expect(acquire).toHaveText("ACQUIRE RELIC — $78");
+  await expect(page.getByText("secure checkout", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("etsy-fallback-inspection")).toHaveAttribute(
+    "href",
+    etsyUrl,
+  );
+
   await acquire.click();
-  const popup = await popupPromise;
-  await popup.waitForLoadState("domcontentloaded");
-  expect(popup.url()).toBe(etsyUrl);
+  await expect(page).toHaveURL("https://checkout.stripe.test/session");
+  expect(checkoutBody).toEqual({ slug: "green-drop-lariat" });
+});
+
+test("transferred commerce truth removes the relic from Current and moves its permanent record into Archive", async ({
+  page,
+}) => {
+  await page.setExtraHTTPHeaders({
+    "x-remy-e2e-commerce-state": "transferred",
+  });
+
+  await page.goto("/current");
+  await expect(page.getByTestId("active-relic")).toHaveCount(0);
+  await expect(page.getByText("06 AVAILABLE", { exact: true })).toBeVisible();
+
+  await page.goto(relicPath);
+  await expect(page.locator("main")).toHaveAttribute("data-screen", "record");
+  await expect(page.locator("main")).toHaveAttribute(
+    "data-status",
+    "transferred",
+  );
+  await expect(page.getByText("OBJECT RECORD / TRANSFERRED", { exact: true })).toBeVisible();
+  await expect(page.getByText("09.09.26", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("acquire-record")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "RETURN TO ARCHIVE →" })).toBeVisible();
+
+  await page.goto("/archive");
+  await expect(page.getByText("12 TRANSFERRED", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("archive-green-drop")).toBeVisible();
+  await expect(page.getByText("TRANSFER / 09.09.26", { exact: true })).toBeVisible();
+
+  await page.getByTestId("archive-green-drop").click();
+  await expect(page).toHaveURL(`${relicPath}?view=record`);
+  await expect(page.locator("main")).toHaveAttribute("data-screen", "record");
+});
+
+test("transfer confirmation is server-record authoritative for recorded, pending, and canceled sessions", async ({
+  page,
+}) => {
+  await page.goto("/transfer/confirmation?session_id=e2e-transferred");
+  await expect(page.locator("main")).toHaveAttribute(
+    "data-transfer-state",
+    "recorded",
+  );
+  await expect(
+    page.getByRole("heading", { name: "RELIC TRANSFER RECORDED" }),
+  ).toBeVisible();
+  await expect(page.getByText("SERVER RECORD / VERIFIED", { exact: true })).toBeVisible();
+  await expect(page.getByText("TRANSFER / 09.09.26", { exact: true })).toBeVisible();
+
+  await page.goto("/transfer/confirmation?session_id=e2e-pending");
+  await expect(page.locator("main")).toHaveAttribute(
+    "data-transfer-state",
+    "verifying",
+  );
+  await expect(
+    page.getByRole("heading", { name: "TRANSFER VERIFYING" }),
+  ).toBeVisible();
+  await expect(page.getByText("RELIC TRANSFER RECORDED", { exact: true })).toHaveCount(0);
+
+  await page.goto("/transfer/confirmation?session_id=e2e-canceled");
+  await expect(page.locator("main")).toHaveAttribute(
+    "data-transfer-state",
+    "not-recorded",
+  );
+  await expect(
+    page.getByRole("heading", { name: "TRANSFER NOT RECORDED" }),
+  ).toBeVisible();
+  await expect(page.getByText("RELIC TRANSFER RECORDED", { exact: true })).toHaveCount(0);
 });
 
 test("the locked relic route has canonical SEO and unknown relics 404", async ({ page }) => {
@@ -317,7 +411,13 @@ test("Inspection Log uses only local observation truth and reopens the permanent
   await page.getByTestId("reopen-relic").click();
   await expect(page).toHaveURL(`${relicPath}?view=record`);
   await expect(page.locator("main")).toHaveAttribute("data-screen", "record");
-  await expect(page.getByTestId("acquire-record")).toHaveAttribute("href", etsyUrl);
+  await expect(page.getByTestId("acquire-record")).toHaveText(
+    "ACQUIRE RELIC — $78",
+  );
+  await expect(page.getByTestId("etsy-fallback-record")).toHaveAttribute(
+    "href",
+    etsyUrl,
+  );
 
   await page.goBack();
   await expect(page).toHaveURL("/log");
@@ -455,7 +555,11 @@ test("reduced motion covers Arrival, evidence, and the menu overlay", async ({
 });
 
 test("V1 pages expose a minimal accessible document structure", async ({ page }) => {
-  for (const route of [...v1Routes, `${relicPath}?view=record`]) {
+  for (const route of [
+      ...v1Routes,
+      `${relicPath}?view=record`,
+      "/transfer/confirmation?session_id=e2e-transferred",
+    ]) {
     await page.goto(route);
     const audit = await page.evaluate(() => {
       const interactive = Array.from(document.querySelectorAll("a, button"));
@@ -520,7 +624,10 @@ for (const width of [320, 390, 430]) {
     page,
   }) => {
     await page.setViewportSize({ width, height: 844 });
-    for (const route of v1Routes) {
+    for (const route of [
+      ...v1Routes,
+      "/transfer/confirmation?session_id=e2e-transferred",
+    ]) {
       await page.goto(route);
       const field = page.locator("main[data-screen]");
       await expect(field).toBeVisible();
@@ -539,7 +646,11 @@ test("desktop expands the same spatial field without card or grid conversion", a
 }) => {
   await page.setViewportSize({ width: 1024, height: 900 });
 
-  for (const route of [...v1Routes, `${relicPath}?view=record`]) {
+  for (const route of [
+    ...v1Routes,
+    `${relicPath}?view=record`,
+    "/transfer/confirmation?session_id=e2e-transferred",
+  ]) {
     await page.goto(route);
     const field = page.locator("main[data-screen]");
     const box = await field.boundingBox();
