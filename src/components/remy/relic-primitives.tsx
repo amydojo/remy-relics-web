@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import type { EtsyHandoff } from "@/commerce/etsy";
 import { getRemyStateAsset, type RemyStateKey } from "@/data/remy-state-manifest";
 import type { RelicStatus } from "@/data/relic";
 
@@ -90,43 +89,69 @@ export function BottomNav({
 }
 
 export function AcquireCta({
+  action,
   context,
-  handoff,
-  price,
+  disabled,
+  etsyHref,
+  onAcquire,
+  statusMessage,
 }: {
+  action: string;
   context: "inspection" | "record";
-  handoff: EtsyHandoff;
-  price: string;
+  disabled: boolean;
+  etsyHref: string | null;
+  onAcquire: () => void;
+  statusMessage: string | null;
 }) {
   return (
     <div className={styles.acquireUnit} data-context={context}>
-      <a
+      <button
         className={styles.acquireButton}
         data-testid={`acquire-${context}`}
-        href={handoff.href}
-        rel={handoff.rel}
-        target={handoff.target}
+        disabled={disabled}
+        onClick={onAcquire}
+        type="button"
       >
-        ACQUIRE RELIC — {price}
-      </a>
-      <p className={styles.trustLine}>secure checkout via Etsy ↗</p>
+        {action}
+      </button>
+      <p className={styles.trustLine}>secure checkout</p>
+      {statusMessage !== null ? (
+        <p
+          aria-live="polite"
+          className={styles.checkoutNotice}
+          role="status"
+        >
+          {statusMessage}
+        </p>
+      ) : etsyHref !== null ? (
+        <a
+          className={styles.etsyFallback}
+          data-testid={`etsy-fallback-${context}`}
+          href={etsyHref}
+          rel="external noopener noreferrer"
+          target="_blank"
+        >
+          Prefer Etsy? Purchase there ↗
+        </a>
+      ) : null}
     </div>
   );
 }
-
 export function InspectionSheet({
   classification,
   condition,
   relicId,
+  status,
 }: {
   classification: string;
   condition: string;
   relicId: string;
+  status: string;
 }) {
   const rows = [
     ["RELIC ID", relicId],
     ["CLASSIFICATION", classification],
-    ["STATUS", "AVAILABLE"],
+    ["STATUS", status],
     ["CONDITION", condition],
   ] as const;
 
@@ -138,7 +163,7 @@ export function InspectionSheet({
           <div className={styles.sheetRow} key={term}>
             <dt>{term}</dt>
             <dd className={term === "STATUS" ? styles.sheetStatus : undefined}>
-              {term === "STATUS" ? <StatusSignal /> : null}
+              {term === "STATUS" && detail === "AVAILABLE" ? <StatusSignal /> : null}
               {detail}
             </dd>
           </div>

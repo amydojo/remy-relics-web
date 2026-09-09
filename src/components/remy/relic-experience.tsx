@@ -22,12 +22,13 @@ import {
   TransferStamp,
 } from "@/components/remy/relic-primitives";
 import { SiteMenu } from "@/components/remy/site-menu";
-import { createEtsyHandoff } from "@/commerce/etsy";
-import { getCanonicalAsset } from "@/data/asset-manifest";
 import {
-  formatRecoveryDate,
-  formatRelicPrice,
-} from "@/data/golden-path";
+  formatCanonicalDate,
+  formatCanonicalPrice,
+  type ResolvedRelicCommerce,
+} from "@/commerce/catalog-adapter";
+import { getCanonicalAsset } from "@/data/asset-manifest";
+import { formatRecoveryDate } from "@/data/golden-path";
 import type { Relic } from "@/data/relic";
 import { createBrowserInspectionLogStore } from "@/inspection-log/storage";
 import { MOTION_CONTRACT } from "@/motion/contract";
@@ -40,6 +41,7 @@ const inspectionEvidenceTotal = 5;
 type ExperienceMode = "inspection" | "record";
 type TransitionPhase = "rest" | "holding" | "record-entering";
 type TransferRevealState = "hidden" | "revealing" | "settled";
+type CheckoutUiState = "idle" | "submitting" | "error" | "unavailable";
 
 type EvidencePointer = {
   lastAt: number;
@@ -50,10 +52,12 @@ type EvidencePointer = {
 };
 
 export function RelicExperience({
+  commerce,
   displayLabel,
   initialMode = "inspection",
   relic,
 }: {
+  commerce: ResolvedRelicCommerce;
   displayLabel: string;
   initialMode?: ExperienceMode;
   relic: Relic;
@@ -61,7 +65,7 @@ export function RelicExperience({
   const router = useRouter();
   const prefersReducedMotion = usePrefersReducedMotion();
   const [mode, setMode] = useState<ExperienceMode>(() =>
-    relic.status === "transferred" ? "record" : initialMode,
+    commerce.status === "transferred" ? "record" : initialMode,
   );
   const [phase, setPhase] = useState<TransitionPhase>("rest");
   const [inspectionEvidence, setInspectionEvidence] = useState(0);
@@ -70,28 +74,60 @@ export function RelicExperience({
   const [dragging, setDragging] = useState(false);
   const [transferReveal, setTransferReveal] =
     useState<TransferRevealState>("hidden");
+  const [checkoutState, setCheckoutState] =
+    useState<CheckoutUiState>("idle");
   const evidencePointer = useRef<EvidencePointer | null>(null);
   const dragDistance = useRef(0);
   const timers = useRef<Array<ReturnType<typeof setTimeout>>>([]);
   const transferRevealStarted = useRef(false);
-  const handoff = createEtsyHandoff(relic);
-  const price = relic.status === "available" ? formatRelicPrice(relic) : null;
+  const price = formatCanonicalPrice(commerce);
+  const transferDate = formatCanonicalDate(commerce.transferDate);
+  const canAcquire =
+    commerce.status === "available" &&
+    commerce.purchasable &&
+    price !== null;
+  const checkoutAction =
+    checkoutState === "submitting"
+      ? "PREPARING SECURE CHECKOUT"
+      : checkoutState === "unavailable" || commerce.status === "unavailable"
+        ? "RELIC UNAVAILABLE"
+        : commerce.status === "reserved"
+          ? "TRANSFER IN PROCESS"
+          : canAcquire
+            ? `ACQUIRE RELIC — ${price}`
+            : "RELIC UNAVAILABLE";
+  const checkoutStatusMessage =
+    checkoutState === "error"
+      ? "CHECKOUT UNAVAILABLE · TRY AGAIN"
+      : checkoutState === "unavailable"
+        ? "LIVE RECORD CHANGED · RECHECKING"
+        : null;
+  const etsyUrl =
+    canAcquire && checkoutState !== "submitting" ? commerce.etsyUrl : null;
   const heroAsset = getCanonicalAsset(relic.assets.hero);
   const wornAsset = getCanonicalAsset(
     relic.assets.evidence[2]?.assetKey ?? relic.assets.hero,
   );
 
   useEffect(() => {
-    createBrowserInspectionLogStore().recordInspection(relic.id, relic.status);
-  }, [relic.id, relic.status]);
+    if (commerce.status === "available" || commerce.status === "transferred") {
+      createBrowserInspectionLogStore().recordInspection(relic.id, commerce.status);
+    }
+  }, [commerce.status, relic.id]);
 
   useEffect(() => {
-    if (relic.status !== "transferred" || transferRevealStarted.current) {
+    if (commerce.status === "transferred") {
+      setMode("record");
+    }
+  }, [commerce.status]);
+
+  useEffect(() => {
+    if (commerce.status !== "transferred" || transferRevealStarted.current) {
       return;
     }
 
     const store = createBrowserInspectionLogStore();
-    const pendingReveal = store.hasPendingTransferReveal(relic.id, relic.status);
+    const pendingReveal = store.hasPendingTransferReveal(relic.id, "transferred");
 
     if (!pendingReveal) {
       timers.current.push(setTimeout(() => setTransferReveal("settled"), 0));
@@ -113,7 +149,7 @@ export function RelicExperience({
         setTransferReveal("settled");
       }, pause + settle),
     );
-  }, [prefersReducedMotion, relic.id, relic.status]);
+  }, [commerce.status, prefersReducedMotion, relic.id]);
 
   useEffect(() => {
     const scheduledTimers = timers.current;
@@ -218,6 +254,49 @@ export function RelicExperience({
     setInspectionEvidence(nextIndex);
   }
 
+  async function beginCheckout() {
+    if (!canAcquire || checkoutState === "submitting") {
+      return;
+    }
+
+    setCheckoutState("submitting");
+
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: relic.slug }),
+      });
+
+      if (response.status === 409) {
+        setCheckoutState("unavailable");
+        router.refresh();
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Checkout request failed.");
+      }
+
+      const payload: unknown = await response.json();
+      const url =
+        typeof payload === "object" &&
+        payload !== null &&
+        "url" in payload &&
+        typeof payload.url === "string"
+          ? payload.url
+          : null;
+
+      if (url === null || !url.startsWith("https://")) {
+        throw new Error("Checkout response is missing a secure URL.");
+      }
+
+      window.location.assign(url);
+    } catch {
+      setCheckoutState("error");
+    }
+  }
+
   function showFullRecord() {
     if (phase !== "rest") {
       return;
@@ -259,11 +338,11 @@ export function RelicExperience({
       data-motion={prefersReducedMotion ? "reduced" : "full"}
       data-node-id={mode === "inspection" ? "544:31" : "545:56"}
       data-screen={mode}
-      data-status={relic.status}
+      data-status={commerce.status}
       data-transfer-reveal={transferReveal}
       data-transition={phase}
     >
-      {mode === "inspection" && relic.status === "available" && handoff !== null && price !== null ? (
+      {mode === "inspection" && commerce.status !== "transferred" ? (
         <>
           <h1 className={styles.visuallyHidden}>{displayLabel}</h1>
           <header className={`${styles.inspectionHeader} ${styles.inspectionFade}`}>
@@ -276,7 +355,9 @@ export function RelicExperience({
               ←
             </button>
             <p className={styles.inspectionId}>{relic.id}</p>
-            <StatusSignal className={styles.inspectionStatus} />
+            {commerce.status === "available" ? (
+              <StatusSignal className={styles.inspectionStatus} />
+            ) : null}
             <span aria-hidden className={styles.shareGlyph}>↗</span>
             <span aria-hidden className={styles.moreGlyph}>•••</span>
           </header>
@@ -346,6 +427,11 @@ export function RelicExperience({
               classification={relic.classification}
               condition={relic.condition}
               relicId={relic.id}
+              status={
+                commerce.status === "reserved"
+                  ? "PROCESSING"
+                  : commerce.status.toUpperCase()
+              }
             />
           </div>
           <button
@@ -357,7 +443,18 @@ export function RelicExperience({
             VIEW FULL RECORD ↓
           </button>
           <div className={`${styles.inspectionAcquire} ${styles.inspectionFade}`}>
-            <AcquireCta context="inspection" handoff={handoff} price={price} />
+            <AcquireCta
+              action={checkoutAction}
+              context="inspection"
+              disabled={
+                !canAcquire ||
+                checkoutState === "submitting" ||
+                checkoutState === "unavailable"
+              }
+              etsyHref={etsyUrl}
+              onAcquire={beginCheckout}
+              statusMessage={checkoutStatusMessage}
+            />
           </div>
         </>
       ) : (
@@ -367,7 +464,7 @@ export function RelicExperience({
         >
           <button
             aria-label={
-              relic.status === "transferred"
+              commerce.status === "transferred"
                 ? "Back to Archive"
                 : "Back to Current Recoveries"
             }
@@ -381,7 +478,11 @@ export function RelicExperience({
           <SiteMenu className={styles.recordMenu} />
           <h1 className={styles.recordTitle}>{displayLabel}</h1>
           <p className={styles.recordStatus}>
-            OBJECT RECORD / {relic.status === "available" ? "ACTIVE" : "TRANSFERRED"}
+            OBJECT RECORD / {commerce.status === "available"
+              ? "ACTIVE"
+              : commerce.status === "reserved"
+                ? "PROCESSING"
+                : commerce.status.toUpperCase()}
           </p>
           <p className={styles.recordFieldLabel}>
             EVIDENCE FIELD / 03
@@ -403,7 +504,7 @@ export function RelicExperience({
               src={heroAsset.publicPath}
             />
           </button>
-          {relic.status === "transferred" ? (
+          {commerce.status === "transferred" ? (
             <TransferStamp
               className={styles.recordTransferStamp}
               reveal={transferReveal}
@@ -463,25 +564,36 @@ export function RelicExperience({
                 <dt>ASSEMBLY</dt>
                 <dd>{relic.assembly}</dd>
               </div>
-              {relic.status === "transferred" && relic.transferredOn !== undefined ? (
+              {commerce.status === "transferred" && transferDate !== null ? (
                 <div>
                   <dt>TRANSFER</dt>
-                  <dd>{formatRecoveryDate(relic.transferredOn)}</dd>
+                  <dd>{transferDate}</dd>
                 </div>
               ) : null}
             </dl>
           </div>
           <RemyState
             className={styles.remyClipboard}
-            state={relic.status === "transferred" ? "box" : "clipboard"}
+            state={commerce.status === "transferred" ? "box" : "clipboard"}
           />
-          {relic.status === "available" && handoff !== null && price !== null ? (
+          {commerce.status !== "transferred" ? (
             <div className={styles.recordAcquire}>
-              <AcquireCta context="record" handoff={handoff} price={price} />
+              <AcquireCta
+                action={checkoutAction}
+                context="record"
+                disabled={
+                  !canAcquire ||
+                  checkoutState === "submitting" ||
+                  checkoutState === "unavailable"
+                }
+                etsyHref={etsyUrl}
+                onAcquire={beginCheckout}
+                statusMessage={checkoutStatusMessage}
+              />
             </div>
           ) : (
-            <Link className={styles.transferredReturn} href="/current">
-              VIEW CURRENT RECOVERIES →
+            <Link className={styles.transferredReturn} href="/archive">
+              RETURN TO ARCHIVE →
             </Link>
           )}
         </section>
