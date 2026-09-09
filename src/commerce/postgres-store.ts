@@ -110,7 +110,7 @@ export async function reserveRelicAndCreatePendingOrder(
       expiresAt.toISOString(),
     ]);
 
-    const reserved = reservedRows[0] as CommerceRelicRow | undefined;
+    const reserved = reservedRows[0] as unknown as CommerceRelicRow | undefined;
 
     if (!reserved) {
       throw new RelicUnavailableError();
