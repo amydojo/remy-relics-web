@@ -243,6 +243,7 @@
 .screen[data-motion="reduced"] .activeObject,
 .screen[data-motion="reduced"] .trace {
   transform: none;
+  transition: none;
 }
 
 .screen[data-motion="reduced"].promoting .activeObject {
