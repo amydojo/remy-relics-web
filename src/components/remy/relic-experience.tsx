@@ -434,6 +434,11 @@ export function RelicExperience({
             className={`${styles.fullRecordButton} ${styles.inspectionFade}`}
             data-testid="view-full-record"
             onClick={showFullRecord}
+            onPointerUp={(event) => {
+              if (event.pointerType === "touch") {
+                showFullRecord();
+              }
+            }}
             type="button"
           >
             VIEW FULL RECORD ↓
