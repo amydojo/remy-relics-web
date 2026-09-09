@@ -62,6 +62,22 @@ Schema authority for the branch is `db/migrations/001_commerce_v1_2.sql`. It def
 
 No V1.2 migration has been applied to Production.
 
+## Stripe hosted Checkout scaffold
+
+Pass 02/03 backend scaffolding uses the official Stripe Node SDK and Postgres.js. Checkout is server-created from database price and inventory truth only. V1.2 initially restricts Checkout to synchronous card rails so a one-of-one relic is never released while a delayed payment remains unsettled.
+
+- Hosted Checkout, one relic per Session, no generic cart.
+- United States-only shipping-address collection for the MVP, matching the existing domestic-only shipping canon.
+- 30-minute Checkout expiry.
+- Internal order plus reservation are created before the Stripe Session.
+- Stripe Session metadata carries only internal reconciliation identifiers; no private buyer data.
+- Webhooks verify the raw payload signature and apply payment/transfer changes transactionally.
+- Duplicate Stripe events are claimed by event ID before side effects; order and relic invariants independently prevent duplicate transfer.
+- Refund reconciliation changes order truth only and never automatically relists a transferred relic.
+- Runtime code does not release inventory merely because local wall-clock time passed after a Stripe Session exists; Stripe expiry/failure is the release authority.
+
+The branch still requires an isolated Preview Postgres database plus Preview-only `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` before any end-to-end payment or collision claim is valid.
+
 ## Commands
 
 ```bash

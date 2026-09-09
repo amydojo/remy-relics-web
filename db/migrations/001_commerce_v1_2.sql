@@ -35,9 +35,11 @@ CREATE INDEX commerce_relic_reservation_expiry_idx
 
 CREATE TABLE commerce_orders (
   id text PRIMARY KEY,
-  stripe_checkout_session_id text NOT NULL UNIQUE,
+  stripe_checkout_session_id text UNIQUE,
   stripe_payment_intent_id text UNIQUE,
   relic_id text NOT NULL REFERENCES commerce_relics(relic_id),
+  reservation_token text NOT NULL UNIQUE,
+  checkout_expires_at timestamptz NOT NULL,
   amount_cents integer NOT NULL CHECK (amount_cents >= 0),
   currency char(3) NOT NULL DEFAULT 'USD' CHECK (currency = 'USD'),
   customer_email text,

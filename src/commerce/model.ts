@@ -43,11 +43,13 @@ export type FulfillmentStatus =
 export type OrderRecord = {
   amountCents: number;
   currency: CommerceCurrency;
+  checkoutExpiresAt: string;
   fulfillmentStatus: FulfillmentStatus;
   id: string;
   paymentStatus: PaymentStatus;
   relicId: RelicId;
-  stripeCheckoutSessionId: string;
+  reservationToken: string;
+  stripeCheckoutSessionId: string | null;
   stripePaymentIntentId: string | null;
 };
 
