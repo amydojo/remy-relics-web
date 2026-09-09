@@ -35,9 +35,9 @@ describe("Postgres commerce safety contract", () => {
     );
 
     expect(migration).toContain("relic_id text NOT NULL UNIQUE");
-    expect(migration).toContain(
-      "stripe_checkout_session_id text NOT NULL UNIQUE",
-    );
+    expect(migration).toContain("stripe_checkout_session_id text UNIQUE");
+    expect(migration).toContain("reservation_token text NOT NULL UNIQUE");
+    expect(migration).toContain("checkout_expires_at timestamptz NOT NULL");
     expect(migration).toContain("event_key text NOT NULL UNIQUE");
     expect(migration).toContain("stripe_event_id text UNIQUE");
     expect(migration).toContain("commerce_relic_lifecycle_consistency");
