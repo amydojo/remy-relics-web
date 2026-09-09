@@ -273,6 +273,66 @@
   transition-duration: var(--rr-motion-reduced);
 }
 
+@media (max-width: 350px) {
+  .roamCue {
+    right: 16px;
+    left: auto;
+  }
+
+  .traceOne {
+    left: -20px;
+    width: 202px;
+    height: 229px;
+  }
+
+  .activeTether {
+    left: 172px;
+  }
+
+  .activeTrace {
+    left: 187px;
+  }
+
+  .traceTwo {
+    right: -12px;
+    left: auto;
+    width: 94px;
+    height: 123px;
+  }
+
+  .traceTwoLabel {
+    right: 16px;
+    left: auto;
+  }
+
+  .traceThree {
+    left: 34px;
+    width: 85px;
+    height: 100px;
+  }
+
+  .traceThreeLabel {
+    left: 34px;
+  }
+
+  .traceFour {
+    right: 4px;
+    left: auto;
+    width: 137px;
+    height: 157px;
+  }
+
+  .traceFourLabel,
+  .traceFourDate {
+    left: 189px;
+  }
+
+  .remyBox {
+    right: 3px;
+    left: auto;
+  }
+}
+
 @media (min-width: 760px) {
   .title,
   .count,
