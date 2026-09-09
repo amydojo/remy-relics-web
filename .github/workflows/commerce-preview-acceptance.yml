@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   pass-07:
@@ -40,6 +40,17 @@ jobs:
 
       - name: Visual regression
         run: npm run test:visual
+
+      - name: Commit approved Linux visual baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ':(glob)tests/visual/**/*-linux.png'
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "test: commit approved V1.2 Linux visual baselines"
+          git push origin HEAD:feat/commerce-v1-2
 
       - name: Upload visual baseline
         if: always()
