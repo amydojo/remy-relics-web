@@ -7,8 +7,8 @@ for (const width of [320, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto(relicPath);
 
-    const experience = page.locator("main[data-screen='inspection']");
-    await expect(experience).toBeVisible();
+    const experience = page.locator("main");
+    await expect(experience).toHaveAttribute("data-screen", "inspection");
     await expect(experience).toHaveCSS("border-radius", "0px");
 
     const inspectionBox = await experience.boundingBox();
@@ -32,8 +32,8 @@ test("product page unlocks the canonical desktop composition", async ({ page }) 
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.goto(relicPath);
 
-  const experience = page.locator("main[data-screen='inspection']");
-  await expect(experience).toBeVisible();
+  const experience = page.locator("main");
+  await expect(experience).toHaveAttribute("data-screen", "inspection");
   await expect(experience).toHaveCSS("border-radius", "0px");
 
   const inspectionBox = await experience.boundingBox();
