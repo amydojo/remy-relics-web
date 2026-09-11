@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/commerce-v1-2
+      - fix/v1-2-1-product-page-canon
   workflow_dispatch:
 
 permissions:
