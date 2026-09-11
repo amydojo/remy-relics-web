@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 
-import { RemyState, StatusSignal } from "@/components/remy/relic-primitives";
+import {
+  BottomNav,
+  RemyState,
+  StatusSignal,
+} from "@/components/remy/relic-primitives";
 import { SiteMenu } from "@/components/remy/site-menu";
 import { getCanonicalAsset } from "@/data/asset-manifest";
 import { MOTION_CONTRACT } from "@/motion/contract";
@@ -62,7 +66,7 @@ export function ArrivalScreen() {
           alt="Evil-eye relic suspended on a gold chain"
           fill
           loading="eager"
-          sizes="(max-width: 390px) 100vw, 390px"
+          sizes="(max-width: 759px) 100vw, 560px"
           src={hero.publicPath}
         />
       </div>
@@ -96,6 +100,8 @@ export function ArrivalScreen() {
         </Link>
         <p className={styles.fieldCount}>FIELD / 07</p>
       </section>
+
+      <BottomNav active="neutral" />
     </main>
   );
 }
