@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { getMenuExternalLinks } from "@/config/site";
@@ -12,7 +13,7 @@ const externalLinks = getMenuExternalLinks();
 
 type SiteMenuProps = {
   className?: string;
-  glyph?: "+" | "☰";
+  glyph?: "+" | "☰" | "•••";
 };
 
 function ExternalMenuLink({
@@ -50,6 +51,7 @@ function ExternalMenuLink({
 }
 
 export function SiteMenu({ className, glyph = "☰" }: SiteMenuProps) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [inspectionCount, setInspectionCount] = useState(0);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -63,6 +65,10 @@ export function SiteMenu({ className, glyph = "☰" }: SiteMenuProps) {
 
   function closeForNavigation() {
     setOpen(false);
+  }
+
+  function isCurrentRoute(href: string) {
+    return pathname === href || (href === "/current" && pathname.startsWith("/relic/"));
   }
 
   useEffect(() => {
@@ -155,6 +161,34 @@ export function SiteMenu({ className, glyph = "☰" }: SiteMenuProps) {
             <p className={styles.employee}>REMY / EMPLOYEE 001</p>
 
             <nav aria-label="Site" className={styles.navigation}>
+              <section className={styles.browseGroup}>
+                <h2>BROWSE</h2>
+                <Link
+                  aria-current={isCurrentRoute("/current") ? "page" : undefined}
+                  className={styles.menuLink}
+                  href="/current"
+                  onClick={closeForNavigation}
+                >
+                  CURRENT
+                </Link>
+                <Link
+                  aria-current={isCurrentRoute("/archive") ? "page" : undefined}
+                  className={styles.menuLink}
+                  href="/archive"
+                  onClick={closeForNavigation}
+                >
+                  ARCHIVE
+                </Link>
+                <Link
+                  aria-current={isCurrentRoute("/log") ? "page" : undefined}
+                  className={styles.menuLink}
+                  href="/log"
+                  onClick={closeForNavigation}
+                >
+                  LOG / {String(inspectionCount).padStart(2, "0")}
+                </Link>
+              </section>
+
               <section className={styles.aboutGroup}>
                 <h2>ABOUT</h2>
                 <Link
@@ -206,19 +240,6 @@ export function SiteMenu({ className, glyph = "☰" }: SiteMenuProps) {
                   testId="menu-etsy-shop"
                 />
               </section>
-
-              {inspectionCount > 0 ? (
-                <section className={styles.logGroup}>
-                  <p>CONDITIONAL / LOCAL DEVICE</p>
-                  <Link
-                    className={styles.logLink}
-                    href="/log"
-                    onClick={closeForNavigation}
-                  >
-                    YOUR LOG / {String(inspectionCount).padStart(2, "0")}
-                  </Link>
-                </section>
-              ) : null}
             </nav>
           </div>
         </div>
