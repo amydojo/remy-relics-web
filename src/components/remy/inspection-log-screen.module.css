@@ -33,7 +33,7 @@
 }
 
 .menuGlyph {
-  left: 352px;
+  right: 20px;
 }
 
 .title,
@@ -247,7 +247,7 @@
 .currentLink {
   position: absolute;
   z-index: 20;
-  top: 790px;
+  bottom: 80px;
   left: 20px;
   font-size: var(--rr-type-action-size);
   font-weight: var(--rr-type-action-weight);
@@ -274,11 +274,6 @@
 }
 
 @media (max-width: 350px) {
-  .menuGlyph {
-    right: 20px;
-    left: auto;
-  }
-
   .primaryMeta,
   .inspectedAt,
   .reopenCue {
@@ -304,7 +299,6 @@
 
   .menuGlyph {
     right: 32px;
-    left: auto;
   }
 
   .remyClipboard {
