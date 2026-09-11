@@ -57,7 +57,8 @@
 .bottomNav {
   position: absolute;
   z-index: 40;
-  top: 788px;
+  right: 0;
+  bottom: 0;
   left: 0;
   display: flex;
   width: 100%;
