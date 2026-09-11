@@ -58,7 +58,7 @@ export function SpatialCue({
 export function BottomNav({
   active = "current",
 }: {
-  active?: "archive" | "current" | "neutral";
+  active?: "archive" | "current" | "log" | "neutral";
 }) {
   return (
     <nav aria-label="Browse" className={styles.bottomNav}>
@@ -79,9 +79,11 @@ export function BottomNav({
         ARCHIVE
       </Link>
       <Link
-        className={styles.navMuted}
+        aria-current={active === "log" ? "page" : undefined}
+        className={active === "log" ? styles.navActive : styles.navMuted}
         href="/log"
       >
+        {active === "log" ? <StatusSignal /> : null}
         LOG
       </Link>
     </nav>
@@ -218,8 +220,13 @@ export function RemyState({
   const asset = getRemyStateAsset(state);
 
   return (
-    <span aria-hidden className={`${styles.remy} ${className ?? ""}`}>
-      <Image alt="" fill sizes="55px" src={asset.publicPath} />
-    </span>
+    <Image
+      alt=""
+      aria-hidden
+      className={className}
+      height={asset.height}
+      src={asset.publicPath}
+      width={asset.width}
+    />
   );
 }
