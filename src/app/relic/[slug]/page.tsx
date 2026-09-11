@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 import { RelicExperience } from "@/components/remy/relic-experience";
+import { resolveRelicWithCommerceTruth } from "@/commerce/catalog-adapter";
+import { readCommerceRelic } from "@/commerce/public-store";
 import {
   getGoldenPathRelic,
   GREEN_DROP_FIGMA_LABEL,
   GREEN_DROP_LARIAT_SLUG,
 } from "@/data/golden-path";
 import { relicMetadata } from "@/seo/metadata";
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return [{ slug: GREEN_DROP_LARIAT_SLUG }];
@@ -29,18 +34,30 @@ export async function generateMetadata(
 export default async function RelicRoute(props: PageProps<"/relic/[slug]">) {
   const { slug } = await props.params;
   const { view } = await props.searchParams;
-
   const relic = getGoldenPathRelic(slug);
 
   if (relic === null) {
     notFound();
   }
 
+  const requestHeaders = await headers();
+  const commerceRecord = await readCommerceRelic(
+    slug,
+    requestHeaders.get("x-remy-e2e-commerce-state"),
+  );
+
+  if (commerceRecord === null) {
+    throw new Error("Canonical commerce truth is missing for this relic.");
+  }
+
+  const resolved = resolveRelicWithCommerceTruth(relic, commerceRecord);
+
   return (
     <RelicExperience
+      commerce={resolved.commerce}
       displayLabel={GREEN_DROP_FIGMA_LABEL}
       initialMode={view === "record" ? "record" : "inspection"}
-      relic={relic}
+      relic={resolved.presentation}
     />
   );
 }

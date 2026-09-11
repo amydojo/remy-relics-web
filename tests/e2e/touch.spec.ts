@@ -44,6 +44,10 @@ test("the V1 path remains operable with touch input", async ({ page }) => {
   await expect(page.getByTestId("evidence-counter")).toContainText(
     "02 / 05 · SURFACE",
   );
+  // Keep the record activation distinct from the preceding evidence swipe.
+  // This mirrors a real finger lift/re-target instead of chaining synthetic
+  // touch sequences in the same gesture window.
+  await page.waitForTimeout(300);
   await page.getByTestId("view-full-record").tap();
   await expect(page.locator("main")).toHaveAttribute("data-screen", "record");
 });

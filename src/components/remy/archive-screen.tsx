@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   type CSSProperties,
   type PointerEvent,
@@ -15,24 +16,16 @@ import {
   TransferStamp,
 } from "@/components/remy/relic-primitives";
 import { SiteMenu } from "@/components/remy/site-menu";
-import { createEtsyHandoff } from "@/commerce/etsy";
+import {
+  formatCanonicalDate,
+  type ResolvedRelicCommerce,
+} from "@/commerce/catalog-adapter";
 import { ARCHIVE_TRACES } from "@/data/archive";
 import { getCanonicalAsset } from "@/data/asset-manifest";
-import { GREEN_DROP_LARIAT } from "@/data/golden-path";
 import { MOTION_CONTRACT } from "@/motion/contract";
 import { usePrefersReducedMotion } from "@/motion/use-prefers-reduced-motion";
 
 import styles from "./archive-screen.module.css";
-
-const archiveHandoff = (() => {
-  const handoff = createEtsyHandoff(GREEN_DROP_LARIAT);
-
-  if (handoff === null) {
-    throw new Error("The current canonical Etsy handoff is unavailable.");
-  }
-
-  return handoff;
-})();
 
 type DragOrigin = {
   pointerId: number;
@@ -54,11 +47,20 @@ const stampClasses = {
   4: styles.stampFour,
 } as const;
 
-export function ArchiveScreen() {
+export function ArchiveScreen({
+  commerce,
+}: {
+  commerce: ResolvedRelicCommerce;
+}) {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [drag, setDrag] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const dragOrigin = useRef<DragOrigin | null>(null);
+  const includesGreenDrop = commerce.status === "transferred";
+  const visibleTraces = ARCHIVE_TRACES.filter(
+    (trace) => trace.index !== 4 || includesGreenDrop,
+  );
+  const transferDate = formatCanonicalDate(commerce.transferDate);
 
   function beginDrag(event: PointerEvent<HTMLElement>) {
     const target = event.target;
@@ -130,7 +132,9 @@ export function ArchiveScreen() {
     >
       <header>
         <h1 className={styles.title}>ARCHIVE</h1>
-        <p className={styles.count}>12 TRANSFERRED</p>
+        <p className={styles.count}>
+          {includesGreenDrop ? "12" : "11"} TRANSFERRED
+        </p>
         <SiteMenu className={styles.menuGlyph} />
         <p className={styles.fieldLabel}>
           ARCHIVE FIELD / 12
@@ -141,15 +145,11 @@ export function ArchiveScreen() {
       </header>
 
       <section aria-label="Transferred relic traces" className={styles.traceField}>
-        {ARCHIVE_TRACES.map((trace, index) => {
+        {visibleTraces.map((trace, index) => {
           const asset = getCanonicalAsset(trace.assetKey);
-
-          return (
-            <figure
-              className={`${styles.trace} ${traceClasses[trace.index]}`}
-              data-depth={trace.depth}
-              key={trace.index}
-            >
+          const className = `${styles.trace} ${traceClasses[trace.index]}`;
+          const image = (
+            <>
               <Image
                 alt={trace.alt}
                 fill
@@ -158,10 +158,31 @@ export function ArchiveScreen() {
                     ? "eager"
                     : "lazy"
                 }
-                sizes={index === 0 ? "240px" : index === 3 ? "164px" : "112px"}
+                sizes={index === 0 ? "240px" : trace.index === 4 ? "164px" : "112px"}
                 src={asset.publicPath}
               />
               <TransferStamp className={stampClasses[trace.index]} />
+            </>
+          );
+
+          return trace.index === 4 ? (
+            <Link
+              aria-label="View transferred Green Drop Lariat record"
+              className={`${className} ${styles.traceLink}`}
+              data-depth={trace.depth}
+              data-testid="archive-green-drop"
+              href="/relic/green-drop-lariat?view=record"
+              key={trace.index}
+            >
+              {image}
+            </Link>
+          ) : (
+            <figure
+              className={className}
+              data-depth={trace.depth}
+              key={trace.index}
+            >
+              {image}
             </figure>
           );
         })}
@@ -174,7 +195,14 @@ export function ArchiveScreen() {
         </p>
         <p className={styles.traceTwoLabel}>TRACE 02</p>
         <p className={styles.traceThreeLabel}>TRACE 03</p>
-        <p className={styles.traceFourLabel}>TRACE 04</p>
+        {includesGreenDrop ? (
+          <>
+            <p className={styles.traceFourLabel}>TRACE 04</p>
+            {transferDate ? (
+              <p className={styles.traceFourDate}>TRANSFER / {transferDate}</p>
+            ) : null}
+          </>
+        ) : null}
       </section>
 
       <p className={styles.archiveNote}>
@@ -183,7 +211,7 @@ export function ArchiveScreen() {
         DRAG TO ROAM · TAP TO REOPEN.
       </p>
       <RemyState className={styles.remyBox} state="box" />
-      <BottomNav active="archive" handoff={archiveHandoff} />
+      <BottomNav active="archive" />
     </main>
   );
 }

@@ -97,6 +97,11 @@
   pointer-events: none;
 }
 
+.traceLink {
+  pointer-events: auto;
+  text-decoration: none;
+}
+
 .traceOne {
   top: 145px;
   left: -30px;
@@ -233,6 +238,21 @@
   opacity: 0.5;
 }
 
+.traceFourDate {
+  position: absolute;
+  z-index: 20;
+  top: 658px;
+  left: 230px;
+  margin: 0;
+  color: var(--rr-text-secondary);
+  font-size: 9px;
+  font-weight: var(--rr-type-meta-weight);
+  letter-spacing: var(--rr-type-meta-tracking);
+  line-height: var(--rr-type-meta-line);
+  opacity: 0.42;
+  white-space: nowrap;
+}
+
 .archiveNote {
   top: 720px;
   left: 16px;
@@ -251,6 +271,66 @@
 .screen[data-motion="reduced"] .trace {
   transform: rotate(0deg);
   transition-duration: var(--rr-motion-reduced);
+}
+
+@media (max-width: 350px) {
+  .roamCue {
+    right: 16px;
+    left: auto;
+  }
+
+  .traceOne {
+    left: -20px;
+    width: 202px;
+    height: 229px;
+  }
+
+  .activeTether {
+    left: 172px;
+  }
+
+  .activeTrace {
+    left: 187px;
+  }
+
+  .traceTwo {
+    right: -12px;
+    left: auto;
+    width: 94px;
+    height: 123px;
+  }
+
+  .traceTwoLabel {
+    right: 16px;
+    left: auto;
+  }
+
+  .traceThree {
+    left: 34px;
+    width: 85px;
+    height: 100px;
+  }
+
+  .traceThreeLabel {
+    left: 34px;
+  }
+
+  .traceFour {
+    right: 4px;
+    left: auto;
+    width: 137px;
+    height: 157px;
+  }
+
+  .traceFourLabel,
+  .traceFourDate {
+    left: 189px;
+  }
+
+  .remyBox {
+    right: 3px;
+    left: auto;
+  }
 }
 
 @media (min-width: 760px) {
@@ -319,6 +399,12 @@
 
   .traceFourLabel {
     top: 648px;
+    right: 27%;
+    left: auto;
+  }
+
+  .traceFourDate {
+    top: 664px;
     right: 27%;
     left: auto;
   }

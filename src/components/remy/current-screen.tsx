@@ -19,7 +19,7 @@ import {
   StatusSignal,
 } from "@/components/remy/relic-primitives";
 import { SiteMenu } from "@/components/remy/site-menu";
-import { createEtsyHandoff } from "@/commerce/etsy";
+import type { ResolvedRelicCommerce } from "@/commerce/catalog-adapter";
 import { getCanonicalAsset } from "@/data/asset-manifest";
 import {
   GREEN_DROP_FIGMA_LABEL,
@@ -35,16 +35,6 @@ const greenDrop = getCanonicalAsset("relic.greenDrop.sunlightMacro");
 const evilEye = getCanonicalAsset("relic.evilEyeHex.macroBlackWhite");
 const clearFound = getCanonicalAsset("relic.clearFoundTrapezoid.heroBokeh");
 const redWindow = getCanonicalAsset("relic.redWindowRect.macroBokeh");
-const handoff = (() => {
-  const value = createEtsyHandoff(GREEN_DROP_LARIAT);
-
-  if (value === null) {
-    throw new Error("The PASS 01 relic must remain available.");
-  }
-
-  return value;
-})();
-
 type DragOrigin = {
   pointerId: number;
   x: number;
@@ -55,13 +45,19 @@ function isModifiedClick(event: MouseEvent<HTMLAnchorElement>) {
   return event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
 }
 
-export function CurrentScreen() {
+export function CurrentScreen({
+  commerce,
+}: {
+  commerce: ResolvedRelicCommerce;
+}) {
   const router = useRouter();
   const prefersReducedMotion = usePrefersReducedMotion();
   const [drag, setDrag] = useState({ x: 0, y: 0 });
   const [promoting, setPromoting] = useState(false);
   const dragOrigin = useRef<DragOrigin | null>(null);
   const navigationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showActiveRelic = commerce.status !== "transferred";
+  const availableCount = commerce.status === "available" ? 7 : 6;
 
   useEffect(
     () => () => {
@@ -159,7 +155,7 @@ export function CurrentScreen() {
       <header className={styles.chrome}>
         <h1 className={styles.title}>CURRENT RECOVERIES</h1>
         <StatusSignal className={styles.titleSignal} />
-        <p className={styles.availableCount}>07 AVAILABLE</p>
+        <p className={styles.availableCount}>{String(availableCount).padStart(2, "0")} AVAILABLE</p>
         <SiteMenu className={styles.menuGlyph} />
         <p className={styles.fieldLabel}>
           FIELD / 01
@@ -168,22 +164,24 @@ export function CurrentScreen() {
         </p>
       </header>
 
-      <Link
-        aria-label="Inspect Green Drop Lariat"
-        className={styles.activeObject}
-        data-testid="active-relic"
-        href={`/relic/${GREEN_DROP_LARIAT_SLUG}`}
-        onClick={inspectRelic}
-        scroll={false}
-      >
-        <Image
-          alt="Green teardrop lariat resting in sunlight"
-          fill
-          loading="eager"
-          sizes="(max-width: 390px) 68vw, 265px"
-          src={greenDrop.publicPath}
-        />
-      </Link>
+      {showActiveRelic ? (
+        <Link
+          aria-label="Inspect Green Drop Lariat"
+          className={styles.activeObject}
+          data-testid="active-relic"
+          href={`/relic/${GREEN_DROP_LARIAT_SLUG}`}
+          onClick={inspectRelic}
+          scroll={false}
+        >
+          <Image
+            alt="Green teardrop lariat resting in sunlight"
+            fill
+            loading="eager"
+            sizes="(max-width: 390px) 68vw, 265px"
+            src={greenDrop.publicPath}
+          />
+        </Link>
+      ) : null}
 
       <div className={`${styles.trace} ${styles.eyeTrace}`}>
         <Image alt="" fill loading="eager" sizes="120px" src={evilEye.publicPath} />
@@ -196,20 +194,25 @@ export function CurrentScreen() {
       </div>
 
       <div className={styles.fieldCopy}>
-        <p className={styles.activeCount}>ACTIVE 01 / 07</p>
-        <span className={styles.tether} />
-        <RelicMeta
-          className={styles.activeMeta}
-          displayName={GREEN_DROP_FIGMA_LABEL}
-          relicId={GREEN_DROP_LARIAT.id}
-        />
-        <SpatialCue className={styles.inspectCue} label="TAP TO INSPECT ↗" />
+        {showActiveRelic ? (
+          <>
+            <p className={styles.activeCount}>ACTIVE 01 / 07</p>
+            <span className={styles.tether} />
+            <RelicMeta
+              className={styles.activeMeta}
+              displayName={GREEN_DROP_FIGMA_LABEL}
+              relicId={GREEN_DROP_LARIAT.id}
+              status={commerce.status}
+            />
+            <SpatialCue className={styles.inspectCue} label="TAP TO INSPECT ↗" />
+          </>
+        ) : null}
         <p className={styles.eyeLabel}>02 / EYE HEX</p>
         <p className={styles.clearLabel}>03 / CLEAR FOUND</p>
         <p className={styles.redLabel}>04 / RED WINDOW</p>
       </div>
 
-      <BottomNav handoff={handoff} />
+      <BottomNav />
     </main>
   );
 }
