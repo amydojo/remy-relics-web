@@ -1,0 +1,52 @@
+name: Promote V1.2.1 Product Baselines
+
+on:
+  push:
+    branches:
+      - fix/v1-2-1-product-page-canon
+
+permissions:
+  contents: write
+
+jobs:
+  promote-reviewed-shell-baselines:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Promote reviewed product-shell baselines only
+        run: |
+          npx playwright test tests/visual/foundation.spec.ts --project=mobile-390 --grep "Inspection canonical resting state" --update-snapshots
+          npx playwright test tests/visual/responsive.spec.ts --project=mobile-390 --grep "Inspection commerce (320px|430px) boundary field" --update-snapshots
+
+      - name: Commit reviewed baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            tests/visual/foundation.spec.ts-snapshots/pass-01-inspection-mobile-390-linux.png \
+            tests/visual/responsive.spec.ts-snapshots/v1-2-inspection-commerce-mobile-320-mobile-390-linux.png \
+            tests/visual/responsive.spec.ts-snapshots/v1-2-inspection-commerce-mobile-430-mobile-390-linux.png
+          if git diff --cached --quiet; then
+            echo "No reviewed baseline changes to commit."
+            exit 0
+          fi
+          git commit -m "test: approve V1.2.1 product shell baselines"
+          git push origin HEAD:${GITHUB_REF_NAME}
