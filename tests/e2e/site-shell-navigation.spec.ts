@@ -52,27 +52,32 @@ test("browse navigation is explicit and consistent across the site", async ({ pa
     "href",
     "/archive",
   );
-  await expect(menu.getByRole("link", { name: /^LOG \/ / })).toHaveAttribute("href", "/log");
+  await expect(menu.getByRole("link", { name: /^YOUR LOG \/ / })).toHaveAttribute(
+    "href",
+    "/log",
+  );
 
   await menu.getByRole("link", { name: "ARCHIVE", exact: true }).click();
   await expect(page).toHaveURL("/archive");
-  await expect(page.getByRole("navigation", { name: "Browse" }).getByRole("link", { name: "ARCHIVE", exact: true })).toHaveAttribute(
-    "aria-current",
-    "page",
-  );
+  await expect(
+    page
+      .getByRole("navigation", { name: "Browse" })
+      .getByRole("link", { name: "ARCHIVE", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
 
   await page.getByTestId("menu-trigger").click();
   const archiveMenu = page.getByTestId("menu-overlay");
   await expect(
     archiveMenu.getByRole("link", { name: "ARCHIVE", exact: true }),
   ).toHaveAttribute("aria-current", "page");
-  await archiveMenu.getByRole("link", { name: /^LOG \/ / }).click();
+  await archiveMenu.getByRole("link", { name: /^YOUR LOG \/ / }).click();
   await expect(page).toHaveURL("/log");
 
-  await expect(page.getByRole("navigation", { name: "Browse" }).getByRole("link", { name: "LOG", exact: true })).toHaveAttribute(
-    "aria-current",
-    "page",
-  );
+  await expect(
+    page
+      .getByRole("navigation", { name: "Browse" })
+      .getByRole("link", { name: "LOG", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
 });
 
 test("desktop screens expand into the shared 960px composition", async ({ page }) => {
