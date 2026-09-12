@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   pass-07:
@@ -38,21 +38,8 @@ jobs:
       - name: Browser E2E
         run: npm run test:e2e
 
-      - name: Update reviewed visual baselines
-        run: npm run test:visual -- --update-snapshots
-
-      - name: Commit reviewed visual baselines
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tests/visual
-          if git diff --cached --quiet -- tests/visual; then
-            echo "No visual baseline changes to commit."
-            exit 0
-          fi
-          git commit -m "test: accept reviewed V1.2.3 visual baselines"
-          git push origin HEAD:${GITHUB_REF_NAME}
+      - name: Visual regression
+        run: npm run test:visual
 
       - name: Upload visual baseline
         if: always()
