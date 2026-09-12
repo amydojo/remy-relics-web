@@ -78,6 +78,7 @@ export function RelicExperience({
     useState<TransferRevealState>("hidden");
   const [checkoutState, setCheckoutState] =
     useState<CheckoutUiState>("idle");
+  const [shareAnnouncement, setShareAnnouncement] = useState("");
   const evidencePointer = useRef<EvidencePointer | null>(null);
   const dragDistance = useRef(0);
   const timers = useRef<Array<ReturnType<typeof setTimeout>>>([]);
@@ -250,6 +251,39 @@ export function RelicExperience({
     setInspectionEvidence(nextIndex);
   }
 
+  async function shareRelic() {
+    const url = `${window.location.origin}/relic/${relic.slug}`;
+    const shareData = {
+      title: `${displayLabel} — Remy Relics`,
+      text: `${relic.id} / ${displayLabel}`,
+      url,
+    };
+
+    setShareAnnouncement("");
+
+    try {
+      if (typeof navigator.share === "function") {
+        await navigator.share(shareData);
+        setShareAnnouncement("RELIC SHARED");
+        return;
+      }
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        setShareAnnouncement("RELIC LINK COPIED");
+        return;
+      }
+
+      setShareAnnouncement("SHARE UNAVAILABLE");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+
+      setShareAnnouncement("SHARE UNAVAILABLE");
+    }
+  }
+
   async function beginCheckout() {
     if (!canAcquire || checkoutState === "submitting") {
       return;
@@ -354,7 +388,26 @@ export function RelicExperience({
             {commerce.status === "available" ? (
               <StatusSignal className={styles.inspectionStatus} />
             ) : null}
-            <span aria-hidden className={styles.shareGlyph}>↗</span>
+            <button
+              aria-label="Share relic"
+              className={styles.shareGlyph}
+              data-testid="share-relic"
+              onClick={shareRelic}
+              style={{
+                appearance: "none",
+                background: "transparent",
+                border: 0,
+                color: "inherit",
+                cursor: "pointer",
+                padding: 0,
+              }}
+              type="button"
+            >
+              ↗
+            </button>
+            <p aria-live="polite" className={styles.visuallyHidden}>
+              {shareAnnouncement}
+            </p>
             <SiteMenu className={styles.moreGlyph} glyph="•••" />
           </header>
 
