@@ -355,7 +355,7 @@ export function RelicExperience({
               <StatusSignal className={styles.inspectionStatus} />
             ) : null}
             <span aria-hidden className={styles.shareGlyph}>↗</span>
-            <span aria-hidden className={styles.moreGlyph}>•••</span>
+            <SiteMenu className={styles.moreGlyph} glyph="•••" />
           </header>
 
           <div
