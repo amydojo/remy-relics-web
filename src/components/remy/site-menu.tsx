@@ -185,7 +185,7 @@ export function SiteMenu({ className, glyph = "☰" }: SiteMenuProps) {
                   href="/log"
                   onClick={closeForNavigation}
                 >
-                  LOG / {String(inspectionCount).padStart(2, "0")}
+                  YOUR LOG / {String(inspectionCount).padStart(2, "0")}
                 </Link>
               </section>
 
