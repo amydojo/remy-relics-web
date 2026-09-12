@@ -1,9 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-const browseRoutes = ["/", "/current", "/archive", "/log", "/about"] as const;
+const relicPath = "/relic/green-drop-lariat";
+const fieldRoutes = ["/", "/current", "/archive", "/log", "/about", relicPath] as const;
+const browseRoutes = ["/current", "/archive", "/log"] as const;
+const focusedRoutes = ["/", "/about", relicPath] as const;
 
 for (const width of [390, 430]) {
-  for (const route of browseRoutes) {
+  for (const route of fieldRoutes) {
     test(`${route} uses the browser field without a device shell at ${width}px`, async ({
       page,
     }) => {
@@ -23,67 +26,81 @@ for (const width of [390, 430]) {
   }
 }
 
-test("browse navigation is explicit and consistent across the site", async ({ page }) => {
+test("the browse rail belongs only to Current, Archive, and Log", async ({ page }) => {
+  for (const route of browseRoutes) {
+    await page.goto(route);
+    const bottomNav = page.getByRole("navigation", { name: "Browse" });
+
+    await expect(bottomNav).toBeVisible();
+    await expect(bottomNav.getByRole("link", { name: "CURRENT", exact: true })).toHaveAttribute(
+      "href",
+      "/current",
+    );
+    await expect(bottomNav.getByRole("link", { name: "ARCHIVE", exact: true })).toHaveAttribute(
+      "href",
+      "/archive",
+    );
+    await expect(bottomNav.getByRole("link", { name: "LOG", exact: true })).toHaveAttribute(
+      "href",
+      "/log",
+    );
+  }
+
+  for (const route of focusedRoutes) {
+    await page.goto(route);
+    await expect(page.getByRole("navigation", { name: "Browse" })).toHaveCount(0);
+  }
+});
+
+test("Arrival is one threshold action instead of competing navigation", async ({ page }) => {
   await page.goto("/");
 
-  const bottomNav = page.getByRole("navigation", { name: "Browse" });
-  await expect(bottomNav.getByRole("link", { name: "CURRENT", exact: true })).toHaveAttribute(
-    "href",
-    "/current",
-  );
-  await expect(bottomNav.getByRole("link", { name: "ARCHIVE", exact: true })).toHaveAttribute(
-    "href",
-    "/archive",
-  );
-  await expect(bottomNav.getByRole("link", { name: "LOG", exact: true })).toHaveAttribute(
-    "href",
-    "/log",
-  );
+  await expect(page.getByTestId("enter-recoveries")).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Browse" })).toHaveCount(0);
 
   await page.getByTestId("menu-trigger").click();
   const menu = page.getByTestId("menu-overlay");
   await expect(menu).toBeVisible();
-  await expect(menu.getByRole("heading", { name: "BROWSE" })).toBeVisible();
-  await expect(menu.getByRole("link", { name: "CURRENT", exact: true })).toHaveAttribute(
-    "href",
-    "/current",
-  );
-  await expect(menu.getByRole("link", { name: "ARCHIVE", exact: true })).toHaveAttribute(
-    "href",
-    "/archive",
-  );
-  await expect(menu.getByRole("link", { name: /^YOUR LOG \/ / })).toHaveAttribute(
-    "href",
-    "/log",
-  );
+  await expect(menu.getByRole("heading", { name: "BROWSE" })).toHaveCount(0);
+  await expect(menu.getByRole("heading", { name: "ABOUT" })).toBeVisible();
+  await expect(menu.getByRole("heading", { name: "FIELD NOTES" })).toBeVisible();
+  await expect(menu.getByRole("heading", { name: "ELSEWHERE" })).toBeVisible();
+  await expect(menu.getByRole("link", { name: "CURRENT", exact: true })).toHaveCount(0);
+  await expect(menu.getByRole("link", { name: "ARCHIVE", exact: true })).toHaveCount(0);
+  await expect(menu.getByRole("link", { name: "LOG", exact: true })).toHaveCount(0);
+});
 
-  await menu.getByRole("link", { name: "ARCHIVE", exact: true }).click();
-  await expect(page).toHaveURL("/archive");
-  await expect(
-    page
-      .getByRole("navigation", { name: "Browse" })
-      .getByRole("link", { name: "ARCHIVE", exact: true }),
-  ).toHaveAttribute("aria-current", "page");
+test("Inspection uses focused product chrome and the overflow control opens the site menu", async ({
+  page,
+}) => {
+  await page.goto(relicPath);
 
+  await expect(page.locator("main[data-screen='inspection']")).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Browse" })).toHaveCount(0);
   await page.getByTestId("menu-trigger").click();
-  const archiveMenu = page.getByTestId("menu-overlay");
-  await expect(
-    archiveMenu.getByRole("link", { name: "ARCHIVE", exact: true }),
-  ).toHaveAttribute("aria-current", "page");
-  await archiveMenu.getByRole("link", { name: /^YOUR LOG \/ / }).click();
-  await expect(page).toHaveURL("/log");
+  await expect(page.getByTestId("menu-overlay")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ABOUT" })).toBeVisible();
+});
 
-  await expect(
-    page
-      .getByRole("navigation", { name: "Browse" })
-      .getByRole("link", { name: "LOG", exact: true }),
-  ).toHaveAttribute("aria-current", "page");
+test("active browse state follows the current route", async ({ page }) => {
+  for (const [route, label] of [
+    ["/current", "CURRENT"],
+    ["/archive", "ARCHIVE"],
+    ["/log", "LOG"],
+  ] as const) {
+    await page.goto(route);
+    await expect(
+      page
+        .getByRole("navigation", { name: "Browse" })
+        .getByRole("link", { name: label, exact: true }),
+    ).toHaveAttribute("aria-current", "page");
+  }
 });
 
 test("desktop screens expand into the shared 960px composition", async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 900 });
 
-  for (const route of ["/", "/current", "/archive", "/log", "/about"] as const) {
+  for (const route of fieldRoutes) {
     await page.goto(route);
     const screen = page.locator("body > main[data-screen]");
     const box = await screen.boundingBox();
@@ -91,5 +108,6 @@ test("desktop screens expand into the shared 960px composition", async ({ page }
     expect(box?.width).toBeCloseTo(960, 0);
     expect(box?.x).toBeCloseTo(32, 0);
     expect(box?.height).toBeGreaterThanOrEqual(900);
+    await expect(screen).toHaveCSS("border-radius", "0px");
   }
 });
