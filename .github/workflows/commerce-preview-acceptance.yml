@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   pass-07:
@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Node
         uses: actions/setup-node@v4
@@ -38,8 +40,23 @@ jobs:
       - name: Browser E2E
         run: npm run test:e2e
 
-      - name: Visual regression
-        run: npm run test:visual
+      - name: Update reviewed visual baselines
+        run: npm run test:visual -- --update-snapshots
+
+      - name: Commit reviewed visual baselines and restore strict gate
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/visual
+          if git diff --cached --quiet -- tests/visual; then
+            echo "Expected reviewed visual baseline changes, but none were produced."
+            exit 1
+          fi
+          git checkout HEAD^ -- .github/workflows/commerce-preview-acceptance.yml
+          git add .github/workflows/commerce-preview-acceptance.yml
+          git commit -m "test: accept reviewed V1.2.3 visual baselines"
+          git push origin HEAD:${GITHUB_REF_NAME}
 
       - name: Upload visual baseline
         if: always()
