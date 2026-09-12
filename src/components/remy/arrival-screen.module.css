@@ -126,7 +126,7 @@
 
 .enterLink {
   position: absolute;
-  top: 170px;
+  top: 198px;
   left: 20px;
   color: var(--rr-text-primary);
   font-size: var(--rr-type-action-size);
@@ -137,7 +137,7 @@
 }
 
 .fieldCount {
-  top: 173px;
+  top: 201px;
   right: 13px;
   opacity: 0.66;
 }
