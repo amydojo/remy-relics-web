@@ -5,11 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 
-import {
-  BottomNav,
-  RemyState,
-  StatusSignal,
-} from "@/components/remy/relic-primitives";
+import { RemyState, StatusSignal } from "@/components/remy/relic-primitives";
 import { SiteMenu } from "@/components/remy/site-menu";
 import { getCanonicalAsset } from "@/data/asset-manifest";
 import { MOTION_CONTRACT } from "@/motion/contract";
@@ -100,8 +96,6 @@ export function ArrivalScreen() {
         </Link>
         <p className={styles.fieldCount}>FIELD / 07</p>
       </section>
-
-      <BottomNav active="neutral" />
     </main>
   );
 }
