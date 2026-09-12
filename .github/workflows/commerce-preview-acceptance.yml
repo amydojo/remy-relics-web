@@ -6,6 +6,7 @@ on:
       - feat/commerce-v1-2
       - fix/v1-2-1-product-page-canon
       - fix/v1-2-2-site-shell-navigation
+      - fix/v1-2-3-ux-cohesion
   workflow_dispatch:
 
 permissions:
