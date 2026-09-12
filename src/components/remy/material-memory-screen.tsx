@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { BottomNav, RemyState } from "@/components/remy/relic-primitives";
+import { RemyState } from "@/components/remy/relic-primitives";
 import { SiteMenu } from "@/components/remy/site-menu";
 import { getCanonicalVectorAsset } from "@/data/asset-manifest";
 
@@ -65,7 +65,6 @@ export function MaterialMemoryScreen() {
       <Link className={styles.continueLink} href="/current">
         CONTINUE RECOVERIES ↓
       </Link>
-      <BottomNav active="neutral" />
     </main>
   );
 }
