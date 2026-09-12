@@ -5,6 +5,7 @@ on:
     branches:
       - feat/commerce-v1-2
       - fix/v1-2-1-product-page-canon
+      - fix/v1-2-2-site-shell-navigation
   workflow_dispatch:
 
 permissions:
