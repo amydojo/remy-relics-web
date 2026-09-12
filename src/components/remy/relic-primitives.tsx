@@ -139,6 +139,7 @@ export function AcquireCta({
     </div>
   );
 }
+
 export function InspectionSheet({
   classification,
   condition,
@@ -220,13 +221,8 @@ export function RemyState({
   const asset = getRemyStateAsset(state);
 
   return (
-    <Image
-      alt=""
-      aria-hidden
-      className={className}
-      height={asset.height}
-      src={asset.publicPath}
-      width={asset.width}
-    />
+    <span aria-hidden className={`${styles.remy} ${className ?? ""}`}>
+      <Image alt="" fill sizes="55px" src={asset.publicPath} />
+    </span>
   );
 }
