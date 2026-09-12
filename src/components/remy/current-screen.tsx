@@ -26,6 +26,7 @@ import {
   GREEN_DROP_LARIAT,
   GREEN_DROP_LARIAT_SLUG,
 } from "@/data/golden-path";
+import { createBrowserInspectionLogStore } from "@/inspection-log/storage";
 import { MOTION_CONTRACT } from "@/motion/contract";
 import { usePrefersReducedMotion } from "@/motion/use-prefers-reduced-motion";
 
@@ -120,6 +121,12 @@ export function CurrentScreen({
     }
 
     event.preventDefault();
+    if (commerce.status === "available" || commerce.status === "transferred") {
+      createBrowserInspectionLogStore().recordInspection(
+        GREEN_DROP_LARIAT.id,
+        commerce.status,
+      );
+    }
     setDrag({ x: 0, y: 0 });
     setPromoting(true);
     navigationTimer.current = setTimeout(
