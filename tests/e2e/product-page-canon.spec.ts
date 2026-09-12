@@ -28,6 +28,29 @@ for (const width of [320, 390, 430]) {
   });
 }
 
+test("product share control invokes the canonical relic URL", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: async (data: ShareData) => {
+        (window as typeof window & { __remySharedUrl?: string }).__remySharedUrl =
+          typeof data.url === "string" ? data.url : undefined;
+      },
+    });
+  });
+
+  await page.goto(relicPath);
+  await page.getByRole("button", { name: "Share relic" }).click();
+
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => (window as typeof window & { __remySharedUrl?: string }).__remySharedUrl,
+      ),
+    )
+    .toBe(`${new URL(page.url()).origin}${relicPath}`);
+});
+
 test("product page unlocks the canonical desktop composition", async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.goto(relicPath);
