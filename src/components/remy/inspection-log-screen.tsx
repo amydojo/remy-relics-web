@@ -14,6 +14,7 @@ import {
 } from "react";
 
 import {
+  BottomNav,
   RelicMeta,
   RemyState,
   SpatialCue,
@@ -250,6 +251,7 @@ export function InspectionLogScreen() {
       <Link className={styles.currentLink} href="/current">
         VIEW CURRENT RECOVERIES →
       </Link>
+      <BottomNav active="log" />
     </main>
   );
 }

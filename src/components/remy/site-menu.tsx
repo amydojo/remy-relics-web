@@ -12,7 +12,7 @@ const externalLinks = getMenuExternalLinks();
 
 type SiteMenuProps = {
   className?: string;
-  glyph?: "+" | "☰";
+  glyph?: "+" | "☰" | "•••";
 };
 
 function ExternalMenuLink({
@@ -155,6 +155,18 @@ export function SiteMenu({ className, glyph = "☰" }: SiteMenuProps) {
             <p className={styles.employee}>REMY / EMPLOYEE 001</p>
 
             <nav aria-label="Site" className={styles.navigation}>
+              {inspectionCount > 0 ? (
+                <section className={styles.logGroup}>
+                  <Link
+                    className={styles.logLink}
+                    href="/log"
+                    onClick={closeForNavigation}
+                  >
+                    YOUR LOG / {String(inspectionCount).padStart(2, "0")}
+                  </Link>
+                </section>
+              ) : null}
+
               <section className={styles.aboutGroup}>
                 <h2>ABOUT</h2>
                 <Link
@@ -206,19 +218,6 @@ export function SiteMenu({ className, glyph = "☰" }: SiteMenuProps) {
                   testId="menu-etsy-shop"
                 />
               </section>
-
-              {inspectionCount > 0 ? (
-                <section className={styles.logGroup}>
-                  <p>CONDITIONAL / LOCAL DEVICE</p>
-                  <Link
-                    className={styles.logLink}
-                    href="/log"
-                    onClick={closeForNavigation}
-                  >
-                    YOUR LOG / {String(inspectionCount).padStart(2, "0")}
-                  </Link>
-                </section>
-              ) : null}
             </nav>
           </div>
         </div>

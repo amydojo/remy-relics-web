@@ -32,7 +32,7 @@
 .menuGlyph {
   position: absolute;
   top: 18px;
-  left: 352px;
+  right: 20px;
   font-size: var(--rr-type-object-size);
   font-weight: var(--rr-type-object-weight);
   letter-spacing: var(--rr-type-object-tracking);
@@ -95,7 +95,8 @@
 
 .continueLink {
   position: absolute;
-  top: 788px;
+  z-index: 20;
+  bottom: 80px;
   left: 20px;
   font-size: var(--rr-type-action-size);
   font-weight: var(--rr-type-action-weight);
@@ -110,11 +111,6 @@
 }
 
 @media (max-width: 350px) {
-  .menuGlyph {
-    right: 20px;
-    left: auto;
-  }
-
   .statement {
     font-size: 25px;
     line-height: 30px;
@@ -141,7 +137,6 @@
 
   .menuGlyph {
     right: 32px;
-    left: auto;
   }
 
   .statement,

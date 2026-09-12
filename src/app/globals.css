@@ -42,23 +42,23 @@ a {
 }
 
 /*
- * Product pages are documents, not a simulated phone shell. The canonical
- * Figma frames are 390 × 844 presentation canvases, but the shipped page must
- * occupy the browser field and let the existing desktop composition expand.
+ * Figma's 390 × 844 frames are composition references, not browser chrome.
+ * Every first-party screen occupies the browser field on mobile and may expand
+ * into the existing 960px desktop composition without inheriting a rounded
+ * simulated-device shell.
  */
-body > main[data-screen="inspection"],
-body > main[data-screen="record"] {
+body > main[data-screen] {
   width: 100%;
   max-width: 960px;
   min-height: 844px;
   height: max(844px, 100svh);
+  margin-inline: auto;
   border-radius: 0;
 }
 
 @media (min-width: 760px) {
   body > main[data-screen] {
     width: min(100%, 960px);
-    max-width: 960px;
   }
 }
 

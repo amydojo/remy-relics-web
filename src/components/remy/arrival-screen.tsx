@@ -62,7 +62,7 @@ export function ArrivalScreen() {
           alt="Evil-eye relic suspended on a gold chain"
           fill
           loading="eager"
-          sizes="(max-width: 390px) 100vw, 390px"
+          sizes="(max-width: 759px) 100vw, 560px"
           src={hero.publicPath}
         />
       </div>

@@ -58,7 +58,7 @@ export function SpatialCue({
 export function BottomNav({
   active = "current",
 }: {
-  active?: "archive" | "current" | "neutral";
+  active?: "archive" | "current" | "log" | "neutral";
 }) {
   return (
     <nav aria-label="Browse" className={styles.bottomNav}>
@@ -79,9 +79,11 @@ export function BottomNav({
         ARCHIVE
       </Link>
       <Link
-        className={styles.navMuted}
+        aria-current={active === "log" ? "page" : undefined}
+        className={active === "log" ? styles.navActive : styles.navMuted}
         href="/log"
       >
+        {active === "log" ? <StatusSignal /> : null}
         LOG
       </Link>
     </nav>
@@ -137,6 +139,7 @@ export function AcquireCta({
     </div>
   );
 }
+
 export function InspectionSheet({
   classification,
   condition,
