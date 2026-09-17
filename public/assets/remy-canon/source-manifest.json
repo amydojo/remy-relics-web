@@ -2,7 +2,7 @@
   "source": "Figma RR/Remy Canon Vector",
   "familyNodeId": "1028:529",
   "fileKey": "V1WXFOR0Gob6lBc14cbmba",
-  "exportedAt": "2026-09-17T22:44:59.342Z",
+  "exportedAt": "2026-09-17T22:57:28.076Z",
   "assets": {
     "clipboard": {
       "nodeId": "1009:164",
@@ -31,6 +31,20 @@
       "bytes": 48107,
       "sha256": "02567135d9c588d010ec992b5960a4591fb3030edbc6f27db25f7ac26acf11bb",
       "svgStringFingerprint": "77a1111c"
+    },
+    "base": {
+      "nodeId": "1008:176",
+      "publicPath": "/assets/remy-canon/remy-base.svg",
+      "bytes": 32414,
+      "sha256": "f16fa50928bb648520f12d2f652ab66521cdba76d71f57fdb3afc46ff4cad73b",
+      "svgStringFingerprint": "26477ee5"
+    },
+    "lab": {
+      "nodeId": "1013:233",
+      "publicPath": "/assets/remy-canon/remy-lab.svg",
+      "bytes": 40658,
+      "sha256": "004fe3de1061ff9ad6309ac349376f1c875821c300c1015d821f55043ba1c91c",
+      "svgStringFingerprint": "61da56e9"
     }
   }
 }
