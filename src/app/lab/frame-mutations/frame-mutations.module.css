@@ -1,0 +1,854 @@
+.page {
+  min-height: 100svh;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(169, 172, 255, 0.12), transparent 28rem),
+    var(--rr-surface-canvas);
+  color: var(--rr-text-primary);
+  padding: 28px clamp(18px, 4vw, 56px) 48px;
+}
+
+.hero,
+.rules,
+.legend,
+.footer {
+  width: min(100%, 1180px);
+  margin-inline: auto;
+}
+
+.hero {
+  padding: 18px 0 34px;
+  border-bottom: 1px solid var(--rr-border-default);
+}
+
+.heroMeta,
+.heroRail,
+.specimenHeader,
+.serialRow,
+.breakLabel,
+.fieldCode,
+.sectionIndex,
+.stateBand span,
+.footer {
+  font-size: var(--rr-type-meta-size);
+  line-height: var(--rr-type-meta-line);
+  letter-spacing: var(--rr-type-meta-tracking);
+  text-transform: uppercase;
+}
+
+.heroMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--rr-text-secondary);
+}
+
+.hero h1 {
+  max-width: 980px;
+  margin: 52px 0 18px;
+  font-size: clamp(38px, 7vw, 82px);
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+  font-weight: 500;
+}
+
+.hero p {
+  max-width: 720px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--rr-text-secondary);
+}
+
+.heroRail {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-top: 30px;
+  color: var(--rr-text-secondary);
+}
+
+.rules,
+.legend {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.55fr) minmax(0, 1fr);
+  gap: 36px;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--rr-border-default);
+}
+
+.rules h2,
+.legend h2 {
+  margin: 5px 0 0;
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.sectionIndex {
+  color: var(--status-active);
+}
+
+.rules ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rule;
+}
+
+.rules li {
+  counter-increment: rule;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px dotted color-mix(in srgb, var(--rr-border-default), transparent 25%);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.rules li::before {
+  content: counter(rule, decimal-leading-zero);
+  color: var(--rr-text-secondary);
+  font-size: 10px;
+}
+
+.grid {
+  width: min(100%, 1380px);
+  margin: 0 auto;
+  padding: 44px 0 64px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 34px);
+}
+
+.specimen {
+  --ink: #1b1a18;
+  --paper: #fbf8f2;
+  --muted: #6c665e;
+  --line: #c9c0b3;
+  --signal: #e34a3d;
+  --material: #d8d0ff;
+  --material-2: #f0ecff;
+  position: relative;
+  min-width: 0;
+}
+
+.specimenHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 3px 8px;
+  color: var(--rr-text-secondary);
+}
+
+.carrier {
+  position: relative;
+  min-height: 700px;
+  overflow: visible;
+  isolation: isolate;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 20px 50px rgba(42, 35, 25, 0.07);
+}
+
+.surface {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.visualField,
+.titleBlock,
+.stateBand,
+.note,
+.serialRow,
+.indexRail {
+  position: relative;
+  z-index: 2;
+}
+
+.visualField {
+  position: relative;
+  margin: 58px 34px 0;
+  height: 390px;
+  overflow: visible;
+}
+
+.fieldCode {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 4;
+  color: var(--muted);
+}
+
+.trace {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.remy {
+  position: absolute;
+  width: 74%;
+  max-width: 330px;
+  left: 50%;
+  bottom: -24px;
+  transform: translateX(-50%);
+  overflow: visible;
+  z-index: 5;
+  filter: drop-shadow(0 10px 14px rgba(27, 26, 24, 0.1));
+}
+
+.poseGroup {
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: transform var(--rr-motion-promote) var(--rr-motion-ease-settle);
+}
+
+.body,
+.hind,
+.head,
+.ear {
+  fill: #1a1917;
+}
+
+.chest,
+.paw,
+.muzzle {
+  fill: #f8f4ec;
+}
+
+.tail {
+  fill: none;
+  stroke: #1a1917;
+  stroke-width: 24;
+  stroke-linecap: round;
+}
+
+.eye {
+  fill: none;
+  stroke: #c59142;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.nose {
+  fill: #1a1917;
+}
+
+.plush {
+  fill: #b8aaf2;
+  stroke: #1a1917;
+  stroke-width: 3;
+  opacity: 0;
+}
+
+.remy[data-pose="carry"] .plush {
+  opacity: 1;
+}
+
+.remy[data-pose="carry"] .poseGroup {
+  transform: rotate(-7deg) translate(-11px, 8px);
+}
+
+.remy[data-pose="nest"] .poseGroup {
+  transform: translateY(14px) scale(0.96);
+}
+
+.remy[data-pose="drop"] .poseGroup {
+  transform: rotate(5deg) translate(15px, -2px);
+}
+
+.remy[data-pose="sleep"] .poseGroup {
+  transform: rotate(78deg) translate(50px, -32px) scale(0.88);
+}
+
+.remy[data-pose="box"] .poseGroup {
+  transform: translateY(42px) scale(0.9);
+}
+
+.remy[data-pose="run"] .poseGroup {
+  transform: rotate(-18deg) translate(8px, -16px) scale(0.94);
+}
+
+.remy[data-pose="ride"] .poseGroup {
+  transform: translateY(2px) scale(0.9);
+}
+
+.breakLabel {
+  position: absolute;
+  right: 0;
+  bottom: -29px;
+  color: var(--signal);
+  white-space: nowrap;
+}
+
+.titleBlock {
+  display: grid;
+  gap: 3px;
+  margin: 40px 34px 0;
+  padding-top: 15px;
+  border-top: 1px solid currentColor;
+}
+
+.titleBlock span {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.titleBlock strong {
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  font-weight: 500;
+}
+
+.stateBand {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr;
+  gap: 9px 12px;
+  align-items: baseline;
+  margin: 18px 34px 0;
+  padding: 11px 0;
+  border-top: 1px dotted var(--line);
+  border-bottom: 1px dotted var(--line);
+}
+
+.stateBand span {
+  color: var(--muted);
+}
+
+.stateBand b {
+  font-size: 10px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.note {
+  min-height: 62px;
+  margin: 14px 34px 0;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.serialRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 18px 34px 24px;
+  color: var(--muted);
+}
+
+.indexRail {
+  position: absolute;
+  right: 8px;
+  top: 62px;
+  bottom: 22px;
+  width: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.indexRail i {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+/* 01 / Route Mark — transparent route pane, open east rail. */
+.route {
+  --line: #a39cd4;
+  --material: #c8c3ff;
+  --material-2: #ece9ff;
+  --signal: #e34a3d;
+}
+
+.route .carrier {
+  clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%);
+}
+
+.route .surface {
+  background:
+    linear-gradient(115deg, transparent 0 38%, rgba(137, 126, 255, 0.1) 38% 62%, transparent 62%),
+    linear-gradient(180deg, #fbf8f2, #f0ecff);
+}
+
+.route .visualField {
+  border: 1px solid var(--line);
+  background: rgba(200, 195, 255, 0.18);
+  clip-path: polygon(0 0, 91% 0, 91% 22%, 100% 22%, 100% 100%, 0 100%);
+}
+
+.route .trace::before {
+  content: "";
+  position: absolute;
+  left: 12%;
+  top: 72%;
+  width: 87%;
+  height: 2px;
+  background: var(--signal);
+  transform: rotate(-13deg);
+  transform-origin: left;
+  box-shadow: 60px -34px 0 -0.5px var(--signal), 116px -7px 0 -0.5px var(--signal);
+}
+
+.route .remy {
+  left: 59%;
+  bottom: -48px;
+}
+
+.route .indexRail {
+  color: var(--signal);
+}
+
+/* 02 / Soft Object — stitched flock pocket with a seam deliberately crossed. */
+.soft {
+  --line: #ad9ac8;
+  --material: #c9b6da;
+  --material-2: #efe6f4;
+  --signal: #755a90;
+}
+
+.soft .carrier {
+  border-radius: 28px 8px 28px 8px;
+  background: #f8f2f7;
+}
+
+.soft .carrier::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px dashed #bba9c7;
+  border-radius: 22px 5px 22px 5px;
+}
+
+.soft .surface {
+  opacity: 0.8;
+  background-image: radial-gradient(#aa9ab7 0.65px, transparent 0.65px);
+  background-size: 5px 5px;
+}
+
+.soft .visualField {
+  border: 0;
+  border-radius: 42% 42% 18px 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(221, 202, 230, 0.55));
+  box-shadow: inset 0 0 0 1px #c7b4d0;
+}
+
+.soft .visualField::after {
+  content: "PROPERTY STATUS / DISPUTED";
+  position: absolute;
+  left: -18px;
+  bottom: 28px;
+  padding: 6px 8px;
+  border: 1px solid var(--signal);
+  background: var(--paper);
+  color: var(--signal);
+  font-size: 8px;
+  transform: rotate(-90deg);
+  transform-origin: left bottom;
+}
+
+.soft .remy {
+  left: 46%;
+  bottom: -32px;
+}
+
+/* 03 / Tent — an arch/canopy frame that Remy's ears puncture. */
+.tent {
+  --line: #bdb4c8;
+  --material: #e4ddeb;
+  --material-2: #faf6fb;
+  --signal: #7a7182;
+}
+
+.tent .carrier {
+  border-radius: 220px 220px 0 0;
+  overflow: visible;
+  background: linear-gradient(180deg, #f9f6fa 0 28%, #fbf8f2 28%);
+}
+
+.tent .visualField {
+  margin-top: 76px;
+  height: 372px;
+  border: 1px solid #c6bdcf;
+  border-radius: 180px 180px 12px 12px;
+  background:
+    linear-gradient(90deg, rgba(228, 221, 235, 0.8), transparent 18% 82%, rgba(228, 221, 235, 0.8)),
+    rgba(255, 255, 255, 0.38);
+}
+
+.tent .visualField::before,
+.tent .visualField::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #c6bdcf;
+}
+
+.tent .visualField::before { left: 18%; }
+.tent .visualField::after { right: 18%; }
+
+.tent .remy {
+  width: 68%;
+  bottom: -12px;
+}
+
+.tent .breakLabel {
+  bottom: auto;
+  top: -26px;
+  right: 24px;
+}
+
+/* 04 / Edge Event — stepped hazard chassis with a visually detached plate. */
+.drop {
+  --line: #de8076;
+  --material: #f07a6d;
+  --material-2: #ffe1dc;
+  --signal: #e34a3d;
+}
+
+.drop .carrier {
+  clip-path: polygon(0 0, 83% 0, 83% 5%, 100% 5%, 100% 86%, 93% 86%, 93% 100%, 0 100%);
+  background: #fff8f3;
+}
+
+.drop .surface {
+  background: repeating-linear-gradient(-45deg, transparent 0 14px, rgba(227, 74, 61, 0.05) 14px 28px);
+}
+
+.drop .visualField {
+  border-top: 6px solid var(--signal);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+  background: rgba(255, 226, 220, 0.28);
+}
+
+.drop .visualField::after {
+  content: "DROP ZONE";
+  position: absolute;
+  right: -1px;
+  bottom: -41px;
+  width: 37%;
+  padding: 9px;
+  border: 1px solid var(--signal);
+  background: #fff8f3;
+  color: var(--signal);
+  font-size: 9px;
+  text-align: center;
+  transform: translateY(18px) rotate(2deg);
+}
+
+.drop .remy {
+  left: 58%;
+  bottom: -28px;
+}
+
+/* 05 / Low Signal — quiet frosted field; almost no visual noise. */
+.sleep {
+  --line: #c8c3d8;
+  --material: #d8d5e6;
+  --material-2: #f3f1f8;
+  --signal: #9891ab;
+}
+
+.sleep .carrier {
+  background: linear-gradient(180deg, #fbfaf8, #f2eff7);
+}
+
+.sleep .visualField {
+  margin-top: 44px;
+  height: 410px;
+  border: 1px solid rgba(157, 149, 178, 0.55);
+  border-radius: 3px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(221, 217, 235, 0.5));
+  backdrop-filter: blur(8px);
+}
+
+.sleep .trace::before {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #aaa5ba 24% 76%, transparent);
+}
+
+.sleep .remy {
+  width: 70%;
+  left: 48%;
+  bottom: -14px;
+  opacity: 0.96;
+}
+
+.sleep .breakLabel {
+  color: #827b96;
+}
+
+/* 06 / Box Claim — packaging die-cut, label void becomes face window. */
+.box {
+  --line: #a98f68;
+  --material: #cbb18b;
+  --material-2: #eadcc7;
+  --signal: #7d6240;
+}
+
+.box .carrier {
+  background:
+    linear-gradient(90deg, transparent 49.7%, rgba(116, 88, 55, 0.09) 49.7% 50.3%, transparent 50.3%),
+    #e8d8bd;
+  border: 1px solid #a98f68;
+}
+
+.box .surface {
+  background-image: repeating-linear-gradient(0deg, transparent 0 7px, rgba(98, 70, 41, 0.035) 7px 8px);
+}
+
+.box .visualField {
+  border: 1px solid #8e724e;
+  background: #d9c39f;
+  clip-path: polygon(0 0, 34% 0, 34% 10%, 66% 10%, 66% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.box .visualField::before {
+  content: "OPEN / CLAIM / RECLASSIFY";
+  position: absolute;
+  top: 36px;
+  right: 20px;
+  width: 86px;
+  padding: 8px;
+  border: 1px solid #8e724e;
+  background: #f2e8d6;
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.box .remy {
+  width: 71%;
+  bottom: -26px;
+}
+
+/* 07 / Night Circuit — dense graphite field; tail physically crosses the index. */
+.zoom {
+  --ink: #f7f3eb;
+  --paper: #181715;
+  --muted: #aaa39b;
+  --line: #4b4844;
+  --material: #30302e;
+  --material-2: #1d1c1a;
+  --signal: #bcb5ff;
+}
+
+.zoom .carrier {
+  background: #181715;
+  box-shadow: 0 24px 60px rgba(10, 9, 8, 0.2);
+}
+
+.zoom .surface {
+  background:
+    linear-gradient(115deg, transparent 20%, rgba(179, 170, 255, 0.08) 45%, transparent 68%),
+    repeating-linear-gradient(90deg, transparent 0 17px, rgba(255, 255, 255, 0.018) 17px 18px);
+}
+
+.zoom .visualField {
+  border: 1px solid #504d48;
+  background: #11110f;
+  overflow: visible;
+}
+
+.zoom .trace::before,
+.zoom .trace::after {
+  content: "";
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  height: 1px;
+  background: var(--signal);
+  opacity: 0.75;
+}
+
+.zoom .trace::before { top: 36%; transform: skewY(-12deg); }
+.zoom .trace::after { top: 64%; transform: skewY(8deg); }
+
+.zoom .body,
+.zoom .hind,
+.zoom .head,
+.zoom .ear { fill: #f3efe6; }
+.zoom .chest,
+.zoom .paw,
+.zoom .muzzle { fill: #171614; }
+.zoom .tail { stroke: #f3efe6; }
+.zoom .eye { stroke: #bcb5ff; }
+.zoom .nose { fill: #171614; }
+
+.zoom .remy {
+  left: 52%;
+  width: 78%;
+  bottom: -42px;
+  filter: drop-shadow(10px 0 0 rgba(188, 181, 255, 0.11));
+}
+
+.zoom .indexRail {
+  right: -5px;
+  color: var(--signal);
+  z-index: 7;
+}
+
+.zoom .breakLabel {
+  color: var(--signal);
+}
+
+/* 08 / Roomba — circular conductive carrier and status LEDs. */
+.roomba {
+  --line: #8db7aa;
+  --material: #b4ddce;
+  --material-2: #e5f3ee;
+  --signal: #4d9c83;
+}
+
+.roomba .carrier {
+  background: linear-gradient(180deg, #f6f4ee, #ecf5f1);
+}
+
+.roomba .visualField {
+  width: min(78%, 390px);
+  aspect-ratio: 1;
+  height: auto;
+  margin-inline: auto;
+  border: 1px solid #6f9e90;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, #f8faf8 0 52%, #dcece6 52% 54%, #eef5f1 54% 100%);
+}
+
+.roomba .visualField::before {
+  content: "";
+  position: absolute;
+  inset: 9%;
+  border: 1px dashed #93b7ab;
+  border-radius: 50%;
+}
+
+.roomba .visualField::after {
+  content: "●  ●  ●";
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  transform: translateX(-50%);
+  color: var(--signal);
+  letter-spacing: 8px;
+  font-size: 10px;
+}
+
+.roomba .remy {
+  width: 88%;
+  left: 50%;
+  bottom: -22%;
+}
+
+.roomba .titleBlock {
+  margin-top: 76px;
+}
+
+.legend p {
+  margin: 0;
+  max-width: 780px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--rr-text-secondary);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 26px;
+  color: var(--rr-text-secondary);
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    max-width: 650px;
+  }
+
+  .carrier {
+    min-height: 680px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-inline: 14px;
+  }
+
+  .hero h1 {
+    margin-top: 40px;
+  }
+
+  .rules,
+  .legend {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .carrier {
+    min-height: 640px;
+  }
+
+  .visualField {
+    margin-inline: 20px;
+    height: 350px;
+  }
+
+  .titleBlock,
+  .stateBand,
+  .note,
+  .serialRow {
+    margin-inline: 20px;
+  }
+
+  .stateBand {
+    grid-template-columns: auto 1fr;
+  }
+
+  .stateBand b {
+    text-align: right;
+  }
+
+  .serialRow,
+  .footer {
+    flex-direction: column;
+  }
+
+  .tent .visualField {
+    height: 338px;
+  }
+
+  .sleep .visualField {
+    height: 356px;
+  }
+
+  .roomba .titleBlock {
+    margin-top: 58px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poseGroup {
+    transition: none;
+  }
+}
