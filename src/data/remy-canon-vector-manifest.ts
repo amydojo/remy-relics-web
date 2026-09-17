@@ -1,6 +1,13 @@
 import type { FigmaNodeId } from "@/design/figma-contract";
 
-export const REMY_CANON_VECTOR_KEYS = ["patrol", "clipboard", "sleep", "box"] as const;
+export const REMY_CANON_VECTOR_KEYS = [
+  "base",
+  "clipboard",
+  "sleep",
+  "box",
+  "patrol",
+  "lab",
+] as const;
 
 export type RemyCanonVectorKey = (typeof REMY_CANON_VECTOR_KEYS)[number];
 
@@ -21,14 +28,14 @@ export const REMY_CANON_VECTOR_FAMILY = {
 } as const;
 
 export const REMY_CANON_VECTOR_MANIFEST = {
-  patrol: {
-    key: "patrol",
-    figmaNodeId: "1019:198",
+  base: {
+    key: "base",
+    figmaNodeId: "1008:176",
     width: 160,
     height: 160,
-    publicPath: "/assets/remy-canon/remy-patrol.svg",
-    sha256: "02567135d9c588d010ec992b5960a4591fb3030edbc6f27db25f7ac26acf11bb",
-    svgStringFingerprint: "77a1111c",
+    publicPath: "/assets/remy-canon/remy-base.svg",
+    sha256: "f16fa50928bb648520f12d2f652ab66521cdba76d71f57fdb3afc46ff4cad73b",
+    svgStringFingerprint: "26477ee5",
   },
   clipboard: {
     key: "clipboard",
@@ -56,6 +63,24 @@ export const REMY_CANON_VECTOR_MANIFEST = {
     publicPath: "/assets/remy-canon/remy-box.svg",
     sha256: "3dd849df9eea801afdf8ceb9bf5ebf4c99e2852f432253ccd38f82ad0111c915",
     svgStringFingerprint: "11a3fe51",
+  },
+  patrol: {
+    key: "patrol",
+    figmaNodeId: "1019:198",
+    width: 160,
+    height: 160,
+    publicPath: "/assets/remy-canon/remy-patrol.svg",
+    sha256: "02567135d9c588d010ec992b5960a4591fb3030edbc6f27db25f7ac26acf11bb",
+    svgStringFingerprint: "77a1111c",
+  },
+  lab: {
+    key: "lab",
+    figmaNodeId: "1013:233",
+    width: 160,
+    height: 160,
+    publicPath: "/assets/remy-canon/remy-lab.svg",
+    sha256: "004fe3de1061ff9ad6309ac349376f1c875821c300c1015d821f55043ba1c91c",
+    svgStringFingerprint: "61da56e9",
   },
 } as const satisfies Record<RemyCanonVectorKey, RemyCanonVectorAsset>;
 
