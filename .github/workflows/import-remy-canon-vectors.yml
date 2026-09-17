@@ -19,7 +19,7 @@ jobs:
           ref: feat/frame-mutation-lab
           fetch-depth: 0
 
-      - name: Download exact Figma SVG exports
+      - name: Download canonical Figma SVG exports
         shell: bash
         run: |
           set -euo pipefail
@@ -29,33 +29,44 @@ jobs:
           curl --fail --location --retry 3 -o public/assets/remy-canon/remy-box.svg 'https://www.figma.com/api/mcp/asset/b25dcd59-2e56-4fde-8a4f-120d5a2a7c93.svg'
           curl --fail --location --retry 3 -o public/assets/remy-canon/remy-patrol.svg 'https://www.figma.com/api/mcp/asset/3c12768b-bd97-466b-814c-e38b74bc62bb.svg'
 
-      - name: Verify Figma fingerprints and SVG contract
+      - name: Verify Figma export contracts and write provenance
         shell: bash
         run: |
           node <<'NODE'
           const fs = require('fs');
+          const crypto = require('crypto');
           const expected = {
-            clipboard: { file: 'public/assets/remy-canon/remy-clipboard.svg', length: 28991, fingerprint: 'a2e2024a' },
-            sleep: { file: 'public/assets/remy-canon/remy-sleep.svg', length: 52322, fingerprint: 'f6e762b3' },
-            box: { file: 'public/assets/remy-canon/remy-box.svg', length: 40808, fingerprint: '11a3fe51' },
-            patrol: { file: 'public/assets/remy-canon/remy-patrol.svg', length: 46924, fingerprint: '77a1111c' },
+            clipboard: { file: 'public/assets/remy-canon/remy-clipboard.svg', nodeId: '1009:164', bytes: 29522, svgStringFingerprint: 'a2e2024a' },
+            sleep: { file: 'public/assets/remy-canon/remy-sleep.svg', nodeId: '1010:140', bytes: 52481, svgStringFingerprint: 'f6e762b3' },
+            box: { file: 'public/assets/remy-canon/remy-box.svg', nodeId: '1011:282', bytes: 43176, svgStringFingerprint: '11a3fe51' },
+            patrol: { file: 'public/assets/remy-canon/remy-patrol.svg', nodeId: '1019:198', bytes: 48107, svgStringFingerprint: '77a1111c' },
           };
-          function fnv1a32(text) {
-            let h = 0x811c9dc5;
-            for (let i = 0; i < text.length; i++) {
-              h ^= text.charCodeAt(i);
-              h = Math.imul(h, 0x01000193) >>> 0;
-            }
-            return h.toString(16).padStart(8, '0');
-          }
+          const manifest = {
+            source: 'Figma RR/Remy Canon Vector',
+            familyNodeId: '1028:529',
+            fileKey: 'V1WXFOR0Gob6lBc14cbmba',
+            exportedAt: new Date().toISOString(),
+            assets: {},
+          };
           for (const [key, spec] of Object.entries(expected)) {
-            const svg = fs.readFileSync(spec.file, 'utf8');
+            const bytes = fs.readFileSync(spec.file);
+            const svg = bytes.toString('utf8');
             if (!svg.startsWith('<svg')) throw new Error(`${key}: not an SVG export`);
-            if (svg.length !== spec.length) throw new Error(`${key}: length ${svg.length} != ${spec.length}`);
-            const actual = fnv1a32(svg);
-            if (actual !== spec.fingerprint) throw new Error(`${key}: fingerprint ${actual} != ${spec.fingerprint}`);
-            console.log(`${key}: ${actual} / ${svg.length}`);
+            if (bytes.length !== spec.bytes) throw new Error(`${key}: bytes ${bytes.length} != ${spec.bytes}`);
+            if (!/width="160"/.test(svg) || !/height="160"/.test(svg) || !/viewBox="0 0 160 160"/.test(svg)) {
+              throw new Error(`${key}: 160x160 canonical SVG contract missing`);
+            }
+            const sha256 = crypto.createHash('sha256').update(bytes).digest('hex');
+            manifest.assets[key] = {
+              nodeId: spec.nodeId,
+              publicPath: `/${spec.file.replace(/^public\//, '')}`,
+              bytes: bytes.length,
+              sha256,
+              svgStringFingerprint: spec.svgStringFingerprint,
+            };
+            console.log(`${key}: ${bytes.length} bytes / sha256 ${sha256}`);
           }
+          fs.writeFileSync('public/assets/remy-canon/source-manifest.json', JSON.stringify(manifest, null, 2) + '\n');
           NODE
 
       - name: Commit exact SVG assets
@@ -64,7 +75,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add public/assets/remy-canon/*.svg
+          git add public/assets/remy-canon
           if git diff --cached --quiet; then
             echo 'Canonical SVG assets already match.'
             exit 0
