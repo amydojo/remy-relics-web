@@ -6,8 +6,8 @@ import {
   type RemyCanonVectorKey,
 } from "@/data/remy-canon-vector-manifest";
 
-import canonPlacement from "./canon-placement.module.css";
 import styles from "./frame-mutations.module.css";
+import canonPlacement from "./canon-placement.module.css";
 
 export const metadata: Metadata = {
   title: "Frame Mutation Lab — Remy Relics",
