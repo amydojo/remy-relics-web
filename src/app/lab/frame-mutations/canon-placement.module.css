@@ -1,0 +1,66 @@
+.canonRemy {
+  --canon-shift-x: 0px;
+  --canon-shift-y: 0px;
+  --canon-rotate: 0deg;
+  --canon-scale: 1;
+  transform: translateX(-50%) translate(var(--canon-shift-x), var(--canon-shift-y))
+    rotate(var(--canon-rotate)) scale(var(--canon-scale));
+  transform-origin: 50% 70%;
+  transition: transform var(--rr-motion-promote) var(--rr-motion-ease-settle);
+}
+
+.route {
+  --canon-shift-x: 14px;
+  --canon-shift-y: -6px;
+  --canon-rotate: -2deg;
+  --canon-scale: 1.04;
+}
+
+.soft {
+  --canon-shift-x: -8px;
+  --canon-shift-y: 7px;
+  --canon-rotate: -1deg;
+  --canon-scale: 1.06;
+}
+
+.tent {
+  --canon-shift-y: -30px;
+  --canon-scale: 1.09;
+}
+
+.drop {
+  --canon-shift-x: 17px;
+  --canon-shift-y: 9px;
+  --canon-rotate: 2deg;
+  --canon-scale: 1.02;
+}
+
+.sleep {
+  --canon-shift-x: -7px;
+  --canon-shift-y: 8px;
+  --canon-rotate: -1deg;
+  --canon-scale: 1.06;
+}
+
+.box {
+  --canon-shift-y: 5px;
+  --canon-scale: 1.04;
+}
+
+.lab {
+  --canon-shift-x: 10px;
+  --canon-shift-y: -5px;
+  --canon-rotate: 1deg;
+  --canon-scale: 1.04;
+}
+
+.roomba {
+  --canon-shift-y: -2px;
+  --canon-scale: 0.96;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canonRemy {
+    transition: none;
+  }
+}
