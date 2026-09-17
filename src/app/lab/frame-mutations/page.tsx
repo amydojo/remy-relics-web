@@ -159,6 +159,7 @@ function CanonRemy({
       width={asset.width}
       height={asset.height}
       sizes="(max-width: 760px) 68vw, 330px"
+      style={{ height: "auto" }}
       alt={`Canon Remy — ${remyState} state`}
     />
   );
