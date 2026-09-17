@@ -1,0 +1,73 @@
+name: Import Remy Canon Vectors
+
+on:
+  push:
+    branches:
+      - feat/frame-mutation-lab
+    paths:
+      - .github/workflows/import-remy-canon-vectors.yml
+
+permissions:
+  contents: write
+
+jobs:
+  import-vectors:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/frame-mutation-lab
+          fetch-depth: 0
+
+      - name: Download exact Figma SVG exports
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/assets/remy-canon
+          curl --fail --location --retry 3 -o public/assets/remy-canon/remy-clipboard.svg 'https://www.figma.com/api/mcp/asset/ddd893bc-43b7-4136-a785-5bdeddc267d0.svg'
+          curl --fail --location --retry 3 -o public/assets/remy-canon/remy-sleep.svg 'https://www.figma.com/api/mcp/asset/b9375ae9-6c16-4cad-a0d2-939d51efe0ab.svg'
+          curl --fail --location --retry 3 -o public/assets/remy-canon/remy-box.svg 'https://www.figma.com/api/mcp/asset/b25dcd59-2e56-4fde-8a4f-120d5a2a7c93.svg'
+          curl --fail --location --retry 3 -o public/assets/remy-canon/remy-patrol.svg 'https://www.figma.com/api/mcp/asset/3c12768b-bd97-466b-814c-e38b74bc62bb.svg'
+
+      - name: Verify Figma fingerprints and SVG contract
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const expected = {
+            clipboard: { file: 'public/assets/remy-canon/remy-clipboard.svg', length: 28991, fingerprint: 'a2e2024a' },
+            sleep: { file: 'public/assets/remy-canon/remy-sleep.svg', length: 52322, fingerprint: 'f6e762b3' },
+            box: { file: 'public/assets/remy-canon/remy-box.svg', length: 40808, fingerprint: '11a3fe51' },
+            patrol: { file: 'public/assets/remy-canon/remy-patrol.svg', length: 46924, fingerprint: '77a1111c' },
+          };
+          function fnv1a32(text) {
+            let h = 0x811c9dc5;
+            for (let i = 0; i < text.length; i++) {
+              h ^= text.charCodeAt(i);
+              h = Math.imul(h, 0x01000193) >>> 0;
+            }
+            return h.toString(16).padStart(8, '0');
+          }
+          for (const [key, spec] of Object.entries(expected)) {
+            const svg = fs.readFileSync(spec.file, 'utf8');
+            if (!svg.startsWith('<svg')) throw new Error(`${key}: not an SVG export`);
+            if (svg.length !== spec.length) throw new Error(`${key}: length ${svg.length} != ${spec.length}`);
+            const actual = fnv1a32(svg);
+            if (actual !== spec.fingerprint) throw new Error(`${key}: fingerprint ${actual} != ${spec.fingerprint}`);
+            console.log(`${key}: ${actual} / ${svg.length}`);
+          }
+          NODE
+
+      - name: Commit exact SVG assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/assets/remy-canon/*.svg
+          if git diff --cached --quiet; then
+            echo 'Canonical SVG assets already match.'
+            exit 0
+          fi
+          git commit -m 'feat: ingest exact Figma Remy canon vectors'
+          git push origin HEAD:feat/frame-mutation-lab
