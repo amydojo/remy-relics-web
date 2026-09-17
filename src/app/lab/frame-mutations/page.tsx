@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import {
-  getRemyStateAsset,
-  type RemyStateKey,
-} from "@/data/remy-state-manifest";
+  getRemyCanonVectorAsset,
+  type RemyCanonVectorKey,
+} from "@/data/remy-canon-vector-manifest";
 
 import styles from "./frame-mutations.module.css";
 
@@ -25,7 +25,7 @@ type Specimen = {
   signal: string;
   note: string;
   pose: "walk" | "carry" | "nest" | "drop" | "sleep" | "box" | "run" | "ride";
-  remyState: RemyStateKey;
+  remyState: RemyCanonVectorKey;
   frameClass: string;
 };
 
@@ -137,7 +137,7 @@ const specimens: Specimen[] = [
     emotion: "UNBOTHERED",
     breakRule: "SUBJECT OVERRIDES CIRCLE",
     signal: "RIDE / 05",
-    note: "Canon patrol is standing in until the locked Roomba state enters the production manifest.",
+    note: "Locked Patrol / Roomba canon clears the conductive ring without surrendering the route.",
     pose: "ride",
     remyState: "patrol",
     frameClass: styles.roomba,
@@ -148,18 +148,20 @@ function CanonRemy({
   pose,
   remyState,
 }: Pick<Specimen, "pose" | "remyState">) {
-  const asset = getRemyStateAsset(remyState);
+  const asset = getRemyCanonVectorAsset(remyState);
 
   return (
     <Image
       className={`${styles.remy} ${styles.remyCanon}`}
       data-pose={pose}
       data-canon-state={remyState}
+      data-figma-node-id={asset.figmaNodeId}
       src={asset.publicPath}
       width={asset.width}
       height={asset.height}
       sizes="(max-width: 760px) 68vw, 330px"
       style={{ height: "auto" }}
+      unoptimized
       alt={`Canon Remy — ${remyState} state`}
     />
   );
@@ -204,7 +206,7 @@ function SpecimenCard({ specimen }: { specimen: Specimen }) {
         <div className={styles.note}>{specimen.note}</div>
         <div className={styles.serialRow}>
           <span>REMY RELICS / MUTATION LAB</span>
-          <span>CANON / {specimen.remyState.toUpperCase()}</span>
+          <span>CANON VECTOR / {specimen.remyState.toUpperCase()}</span>
         </div>
       </div>
     </article>
@@ -223,7 +225,7 @@ export default function FrameMutationLabRoute() {
         <p>
           Eight original frame families built from Remy Relics grammar: quiet archival structure,
           semantic materials, tiny state signals, and one controlled rule-break per object. The
-          subject layer now comes directly from the production Remy state manifest. Rarity is not
+          subject layer now resolves through the canonical Figma vector family. Rarity is not
           scarcity here. Rarity is the material a memory seems to want.
         </p>
         <div className={styles.heroRail}>
@@ -247,7 +249,7 @@ export default function FrameMutationLabRoute() {
           <li>Material state carries emotional meaning; it is never decorative foil for its own sake.</li>
           <li>Remy may break exactly one primary containment rule per frame.</li>
           <li>The breach must preserve the archive skeleton rather than erase it.</li>
-          <li>The subject layer must resolve through the production Remy state manifest.</li>
+          <li>The subject layer must resolve through the canonical Figma vector manifest.</li>
         </ol>
       </section>
 
