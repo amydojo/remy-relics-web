@@ -1,0 +1,36 @@
+{
+  "source": "Figma RR/Remy Canon Vector",
+  "familyNodeId": "1028:529",
+  "fileKey": "V1WXFOR0Gob6lBc14cbmba",
+  "exportedAt": "2026-09-17T22:44:59.342Z",
+  "assets": {
+    "clipboard": {
+      "nodeId": "1009:164",
+      "publicPath": "/assets/remy-canon/remy-clipboard.svg",
+      "bytes": 29522,
+      "sha256": "e5754f40080bb91a6061e5cf7fe85ad00fe8229106827be50dd1029a74ba1ecf",
+      "svgStringFingerprint": "a2e2024a"
+    },
+    "sleep": {
+      "nodeId": "1010:140",
+      "publicPath": "/assets/remy-canon/remy-sleep.svg",
+      "bytes": 52481,
+      "sha256": "2605a0d68ad98b363f4e284c09c5e4f042398b4cfd5cd4232cabeb6f221edab7",
+      "svgStringFingerprint": "f6e762b3"
+    },
+    "box": {
+      "nodeId": "1011:282",
+      "publicPath": "/assets/remy-canon/remy-box.svg",
+      "bytes": 43176,
+      "sha256": "3dd849df9eea801afdf8ceb9bf5ebf4c99e2852f432253ccd38f82ad0111c915",
+      "svgStringFingerprint": "11a3fe51"
+    },
+    "patrol": {
+      "nodeId": "1019:198",
+      "publicPath": "/assets/remy-canon/remy-patrol.svg",
+      "bytes": 48107,
+      "sha256": "02567135d9c588d010ec992b5960a4591fb3030edbc6f27db25f7ac26acf11bb",
+      "svgStringFingerprint": "77a1111c"
+    }
+  }
+}
