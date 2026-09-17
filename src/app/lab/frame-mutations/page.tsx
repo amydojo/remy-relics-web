@@ -6,6 +6,7 @@ import {
   type RemyCanonVectorKey,
 } from "@/data/remy-canon-vector-manifest";
 
+import canonPlacement from "./canon-placement.module.css";
 import styles from "./frame-mutations.module.css";
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ type Specimen = {
   note: string;
   remyState: RemyCanonVectorKey;
   frameClass: string;
+  subjectClass: string;
 };
 
 const specimens: Specimen[] = [
@@ -41,6 +43,7 @@ const specimens: Specimen[] = [
     note: "A route only becomes unauthorized after somebody tries to stop it.",
     remyState: "patrol",
     frameClass: styles.route,
+    subjectClass: canonPlacement.route,
   },
   {
     id: "RR-FM-02",
@@ -54,6 +57,7 @@ const specimens: Specimen[] = [
     note: "Relocation appears intentional. Ownership remains under review.",
     remyState: "base",
     frameClass: styles.soft,
+    subjectClass: canonPlacement.soft,
   },
   {
     id: "RR-FM-03",
@@ -67,6 +71,7 @@ const specimens: Specimen[] = [
     note: "Temporary structure has become a private jurisdiction.",
     remyState: "base",
     frameClass: styles.tent,
+    subjectClass: canonPlacement.tent,
   },
   {
     id: "RR-FM-04",
@@ -80,6 +85,7 @@ const specimens: Specimen[] = [
     note: "The object was stable until observed by the subject.",
     remyState: "clipboard",
     frameClass: styles.drop,
+    subjectClass: canonPlacement.drop,
   },
   {
     id: "RR-FM-05",
@@ -93,6 +99,7 @@ const specimens: Specimen[] = [
     note: "No actionable movement. Continue monitoring at a respectful distance.",
     remyState: "sleep",
     frameClass: styles.sleep,
+    subjectClass: canonPlacement.sleep,
   },
   {
     id: "RR-FM-06",
@@ -106,6 +113,7 @@ const specimens: Specimen[] = [
     note: "Original shipping purpose superseded immediately upon arrival.",
     remyState: "box",
     frameClass: styles.box,
+    subjectClass: canonPlacement.box,
   },
   {
     id: "RR-FM-07",
@@ -119,6 +127,7 @@ const specimens: Specimen[] = [
     note: "Procedure remains unofficial until the subject says otherwise.",
     remyState: "lab",
     frameClass: styles.zoom,
+    subjectClass: canonPlacement.lab,
   },
   {
     id: "RR-FM-08",
@@ -132,15 +141,19 @@ const specimens: Specimen[] = [
     note: "Patrol canon clears the conductive ring without surrendering the route.",
     remyState: "patrol",
     frameClass: styles.roomba,
+    subjectClass: canonPlacement.roomba,
   },
 ];
 
-function CanonRemy({ remyState }: Pick<Specimen, "remyState">) {
+function CanonRemy({
+  remyState,
+  subjectClass,
+}: Pick<Specimen, "remyState" | "subjectClass">) {
   const asset = getRemyCanonVectorAsset(remyState);
 
   return (
     <Image
-      className={`${styles.remy} ${styles.remyCanon}`}
+      className={`${styles.remy} ${styles.remyCanon} ${canonPlacement.canonRemy} ${subjectClass}`}
       data-canon-state={remyState}
       data-figma-node-id={asset.figmaNodeId}
       src={asset.publicPath}
@@ -174,7 +187,7 @@ function SpecimenCard({ specimen }: { specimen: Specimen }) {
         <div className={styles.visualField}>
           <span className={styles.fieldCode}>{specimen.signal}</span>
           <div className={styles.trace} aria-hidden="true" />
-          <CanonRemy remyState={specimen.remyState} />
+          <CanonRemy remyState={specimen.remyState} subjectClass={specimen.subjectClass} />
           <span className={styles.breakLabel}>{specimen.breakRule}</span>
         </div>
 
