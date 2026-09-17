@@ -24,7 +24,6 @@ type Specimen = {
   breakRule: string;
   signal: string;
   note: string;
-  pose: "walk" | "carry" | "nest" | "drop" | "sleep" | "box" | "run" | "ride";
   remyState: RemyCanonVectorKey;
   frameClass: string;
 };
@@ -37,10 +36,9 @@ const specimens: Specimen[] = [
     family: "GLASS CARRIER",
     material: "PERIWINKLE GLASS",
     emotion: "UNDETERRED",
-    breakRule: "BODY EXITS EAST RAIL",
+    breakRule: "PATROL EXITS EAST RAIL",
     signal: "ROUTE / 03",
     note: "A route only becomes unauthorized after somebody tries to stop it.",
-    pose: "walk",
     remyState: "patrol",
     frameClass: styles.route,
   },
@@ -51,11 +49,10 @@ const specimens: Specimen[] = [
     family: "FLOCK POCKET",
     material: "LAVENDER FLOCK",
     emotion: "ATTACHED",
-    breakRule: "SUBJECT CROSSES STITCHED SEAM",
-    signal: "CARRY / 01",
+    breakRule: "BASE STATE CROSSES STITCHED SEAM",
+    signal: "FOUND / 01",
     note: "Relocation appears intentional. Ownership remains under review.",
-    pose: "carry",
-    remyState: "clipboard",
+    remyState: "base",
     frameClass: styles.soft,
   },
   {
@@ -68,8 +65,7 @@ const specimens: Specimen[] = [
     breakRule: "EARS PIERCE CANOPY",
     signal: "SHELTER / 07",
     note: "Temporary structure has become a private jurisdiction.",
-    pose: "nest",
-    remyState: "box",
+    remyState: "base",
     frameClass: styles.tent,
   },
   {
@@ -79,10 +75,9 @@ const specimens: Specimen[] = [
     family: "WARNING STEP",
     material: "CORAL ENAMEL",
     emotion: "PROVOCATION",
-    breakRule: "DOCUMENTATION CROSSES LOWER PLATE",
+    breakRule: "CLIPBOARD CROSSES LOWER PLATE",
     signal: "DROP / 04",
     note: "The object was stable until observed by the subject.",
-    pose: "drop",
     remyState: "clipboard",
     frameClass: styles.drop,
   },
@@ -96,7 +91,6 @@ const specimens: Specimen[] = [
     breakRule: "SLEEP MASS RESTS ON DATA RAIL",
     signal: "REST / 00",
     note: "No actionable movement. Continue monitoring at a respectful distance.",
-    pose: "sleep",
     remyState: "sleep",
     frameClass: styles.sleep,
   },
@@ -110,22 +104,20 @@ const specimens: Specimen[] = [
     breakRule: "HEAD OCCUPIES LABEL VOID",
     signal: "CLAIM / 11",
     note: "Original shipping purpose superseded immediately upon arrival.",
-    pose: "box",
     remyState: "box",
     frameClass: styles.box,
   },
   {
     id: "RR-FM-07",
-    title: "NIGHT CIRCUIT",
-    event: "03:17 ACTIVITY",
+    title: "LAB EXCEPTION",
+    event: "PROTOCOL OVERRIDDEN",
     family: "STATIC FIELD",
     material: "GRAPHITE FOIL",
-    emotion: "ZOOMIES",
-    breakRule: "PATROL STATE THREADS INDEX",
-    signal: "BURST / 88",
-    note: "Velocity exceeded the usefulness of conventional documentation.",
-    pose: "run",
-    remyState: "patrol",
+    emotion: "CURIOUS",
+    breakRule: "TOOL CROSSES INDEX",
+    signal: "TEST / 88",
+    note: "Procedure remains unofficial until the subject says otherwise.",
+    remyState: "lab",
     frameClass: styles.zoom,
   },
   {
@@ -135,25 +127,20 @@ const specimens: Specimen[] = [
     family: "CONDUCTIVE RING",
     material: "MINT INDICATOR",
     emotion: "UNBOTHERED",
-    breakRule: "SUBJECT OVERRIDES CIRCLE",
+    breakRule: "PATROL OVERRIDES CIRCLE",
     signal: "RIDE / 05",
-    note: "Locked Patrol / Roomba canon clears the conductive ring without surrendering the route.",
-    pose: "ride",
+    note: "Patrol canon clears the conductive ring without surrendering the route.",
     remyState: "patrol",
     frameClass: styles.roomba,
   },
 ];
 
-function CanonRemy({
-  pose,
-  remyState,
-}: Pick<Specimen, "pose" | "remyState">) {
+function CanonRemy({ remyState }: Pick<Specimen, "remyState">) {
   const asset = getRemyCanonVectorAsset(remyState);
 
   return (
     <Image
       className={`${styles.remy} ${styles.remyCanon}`}
-      data-pose={pose}
       data-canon-state={remyState}
       data-figma-node-id={asset.figmaNodeId}
       src={asset.publicPath}
@@ -187,7 +174,7 @@ function SpecimenCard({ specimen }: { specimen: Specimen }) {
         <div className={styles.visualField}>
           <span className={styles.fieldCode}>{specimen.signal}</span>
           <div className={styles.trace} aria-hidden="true" />
-          <CanonRemy pose={specimen.pose} remyState={specimen.remyState} />
+          <CanonRemy remyState={specimen.remyState} />
           <span className={styles.breakLabel}>{specimen.breakRule}</span>
         </div>
 
@@ -219,17 +206,17 @@ export default function FrameMutationLabRoute() {
       <header className={styles.hero}>
         <div className={styles.heroMeta}>
           <span>RR / INTERNAL STUDY</span>
-          <span>FRAME MUTATION LAB / 02</span>
+          <span>FRAME MUTATION LAB / 03</span>
         </div>
         <h1>Relic-state carriers for behavior that refuses containment.</h1>
         <p>
           Eight original frame families built from Remy Relics grammar: quiet archival structure,
           semantic materials, tiny state signals, and one controlled rule-break per object. The
-          subject layer now resolves through the canonical Figma vector family. Rarity is not
-          scarcity here. Rarity is the material a memory seems to want.
+          subject layer now resolves through the complete six-state Figma vector family. Rarity is
+          not scarcity here. Rarity is the material a memory seems to want.
         </p>
         <div className={styles.heroRail}>
-          <span>CANON REMY</span>
+          <span>CANON REMY / 06 STATES</span>
           <span>→</span>
           <span>STATE</span>
           <span>→</span>
@@ -249,7 +236,7 @@ export default function FrameMutationLabRoute() {
           <li>Material state carries emotional meaning; it is never decorative foil for its own sake.</li>
           <li>Remy may break exactly one primary containment rule per frame.</li>
           <li>The breach must preserve the archive skeleton rather than erase it.</li>
-          <li>The subject layer must resolve through the canonical Figma vector manifest.</li>
+          <li>The subject layer must resolve through one of the six canonical Figma vectors.</li>
         </ol>
       </section>
 
@@ -266,7 +253,7 @@ export default function FrameMutationLabRoute() {
         </div>
         <p>
           The collectible signal comes from mismatch and specificity: frosted acrylic for sleep,
-          flock for attachment, enamel for provocation, graphite foil for midnight velocity. The
+          flock for attachment, enamel for provocation, graphite foil for protocol exceptions. The
           more emotionally exact the material feels, the rarer the record feels—without needing a
           hierarchy of common through legendary.
         </p>
