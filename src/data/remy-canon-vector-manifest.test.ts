@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -34,6 +36,14 @@ describe("Remy canon vector manifest", () => {
       expect(asset.publicPath).toMatch(/^\/assets\/remy-canon\/remy-[a-z]+\.svg$/);
       expect(asset.sha256).toMatch(/^[a-f0-9]{64}$/);
       expect(asset.svgStringFingerprint).toMatch(/^[a-f0-9]{8}$/);
+      expect(asset.transparent).toBe(true);
+
+      const svg = readFileSync(
+        new URL(`../../public${asset.publicPath}`, import.meta.url),
+        "utf8",
+      );
+      expect(svg).toContain('viewBox="0 0 160 160"');
+      expect(svg).not.toContain('<rect width="160" height="160" fill="#F5F5F5"/>');
     }
   });
 });
