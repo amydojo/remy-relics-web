@@ -37,7 +37,8 @@ export const REMY_CANON_VECTOR_MANIFEST = {
     publicPath: "/assets/remy-canon/remy-base.svg",
     sha256: "86949edc72e0febed790bb1a49a203281f8b669625c1d8edd8542cf7a819ba4a",
     svgStringFingerprint: "26477ee5",
-    transparent: true,\n  },
+    transparent: true,
+  },
   clipboard: {
     key: "clipboard",
     figmaNodeId: "1009:164",
@@ -46,7 +47,8 @@ export const REMY_CANON_VECTOR_MANIFEST = {
     publicPath: "/assets/remy-canon/remy-clipboard.svg",
     sha256: "0a814bfaf7e1f699e85c3083ddc888380fa5d639d8ce64e7cb9c23afec650335",
     svgStringFingerprint: "a2e2024a",
-    transparent: true,\n  },
+    transparent: true,
+  },
   sleep: {
     key: "sleep",
     figmaNodeId: "1010:140",
@@ -55,7 +57,8 @@ export const REMY_CANON_VECTOR_MANIFEST = {
     publicPath: "/assets/remy-canon/remy-sleep.svg",
     sha256: "040ba7874ca4f86d5759220c0287cd943504aa770bd76aab6fa3504d4609e133",
     svgStringFingerprint: "f6e762b3",
-    transparent: true,\n  },
+    transparent: true,
+  },
   box: {
     key: "box",
     figmaNodeId: "1011:282",
@@ -64,7 +67,8 @@ export const REMY_CANON_VECTOR_MANIFEST = {
     publicPath: "/assets/remy-canon/remy-box.svg",
     sha256: "a50a76684a7fbfe2a52784f2eee4b90947fed0a5055821e65ec730f01fca1339",
     svgStringFingerprint: "11a3fe51",
-    transparent: true,\n  },
+    transparent: true,
+  },
   patrol: {
     key: "patrol",
     figmaNodeId: "1019:198",
@@ -73,7 +77,8 @@ export const REMY_CANON_VECTOR_MANIFEST = {
     publicPath: "/assets/remy-canon/remy-patrol.svg",
     sha256: "171df9a5148af3f277ce341738d9111755c70c9ef37a0c4099d2cb4a067117fb",
     svgStringFingerprint: "77a1111c",
-    transparent: true,\n  },
+    transparent: true,
+  },
   lab: {
     key: "lab",
     figmaNodeId: "1013:233",
@@ -82,7 +87,8 @@ export const REMY_CANON_VECTOR_MANIFEST = {
     publicPath: "/assets/remy-canon/remy-lab.svg",
     sha256: "2159fa1a8a9fb53d045413d9b9baf87a8fad93732f97205c72303932abb000fc",
     svgStringFingerprint: "61da56e9",
-    transparent: true,\n  },
+    transparent: true,
+  },
 } as const satisfies Record<RemyCanonVectorKey, RemyCanonVectorAsset>;
 
 export function getRemyCanonVectorAsset(key: RemyCanonVectorKey) {
