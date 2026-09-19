@@ -1,0 +1,286 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+
+import {
+  getRemyCanonVectorAsset,
+  type RemyCanonVectorKey,
+} from "@/data/remy-canon-vector-manifest";
+import { RR_SPECIMEN_GLASS } from "@/data/specimen-glass-material";
+
+import styles from "./frame-mutations.module.css";
+import canonPlacement from "./canon-placement.module.css";
+import { SpecimenGlassMaterial } from "./specimen-glass";
+
+export const metadata: Metadata = {
+  title: "Frame Mutation Lab — Remy Relics",
+  description:
+    "Eight original relic-state carrier systems exploring material rarity, emotional state, and Remy breaking containment.",
+};
+
+type Specimen = {
+  id: string;
+  title: string;
+  event: string;
+  family: string;
+  material: string;
+  emotion: string;
+  breakRule: string;
+  signal: string;
+  note: string;
+  remyState: RemyCanonVectorKey;
+  frameClass: string;
+  subjectClass: string;
+};
+
+const specimens: Specimen[] = [
+  {
+    id: "RR-FM-01",
+    title: "ROUTE MARK",
+    event: "GOING ANYWAY",
+    family: "GLASS CARRIER",
+    material: "PERIWINKLE GLASS",
+    emotion: "UNDETERRED",
+    breakRule: "PATROL EXITS EAST RAIL",
+    signal: "ROUTE / 03",
+    note: "A route only becomes unauthorized after somebody tries to stop it.",
+    remyState: "patrol",
+    frameClass: styles.route,
+    subjectClass: canonPlacement.route,
+  },
+  {
+    id: "RR-FM-02",
+    title: "SOFT OBJECT",
+    event: "RECOVERED ELSEWHERE",
+    family: "FLOCK POCKET",
+    material: "LAVENDER FLOCK",
+    emotion: "ATTACHED",
+    breakRule: "BASE STATE CROSSES STITCHED SEAM",
+    signal: "FOUND / 01",
+    note: "Relocation appears intentional. Ownership remains under review.",
+    remyState: "base",
+    frameClass: styles.soft,
+    subjectClass: canonPlacement.soft,
+  },
+  {
+    id: "RR-FM-03",
+    title: "TENT RECORD",
+    event: "OCCUPANCY CONFIRMED",
+    family: "VELLUM ARCH",
+    material: "MILK VELLUM",
+    emotion: "NESTED",
+    breakRule: "EARS PIERCE CANOPY",
+    signal: "SHELTER / 07",
+    note: "Temporary structure has become a private jurisdiction.",
+    remyState: "base",
+    frameClass: styles.tent,
+    subjectClass: canonPlacement.tent,
+  },
+  {
+    id: "RR-FM-04",
+    title: "EDGE EVENT",
+    event: "OBJECT DESCENT",
+    family: "WARNING STEP",
+    material: "CORAL ENAMEL",
+    emotion: "PROVOCATION",
+    breakRule: "CLIPBOARD CROSSES LOWER PLATE",
+    signal: "DROP / 04",
+    note: "The object was stable until observed by the subject.",
+    remyState: "clipboard",
+    frameClass: styles.drop,
+    subjectClass: canonPlacement.drop,
+  },
+  {
+    id: "RR-FM-05",
+    title: "LOW SIGNAL",
+    event: "NAP IN PROGRESS",
+    family: "FROST BED",
+    material: "FROSTED ACRYLIC",
+    emotion: "ASLEEP",
+    breakRule: "SLEEP MASS RESTS ON DATA RAIL",
+    signal: "REST / 00",
+    note: "No actionable movement. Continue monitoring at a respectful distance.",
+    remyState: "sleep",
+    frameClass: styles.sleep,
+    subjectClass: canonPlacement.sleep,
+  },
+  {
+    id: "RR-FM-06",
+    title: "BOX CLAIM",
+    event: "CONTAINER REASSIGNED",
+    family: "DIE-CUT KRAFT",
+    material: "CORRUGATED KRAFT",
+    emotion: "CLAIMED",
+    breakRule: "HEAD OCCUPIES LABEL VOID",
+    signal: "CLAIM / 11",
+    note: "Original shipping purpose superseded immediately upon arrival.",
+    remyState: "box",
+    frameClass: styles.box,
+    subjectClass: canonPlacement.box,
+  },
+  {
+    id: "RR-FM-07",
+    title: "LAB EXCEPTION",
+    event: "PROTOCOL OVERRIDDEN",
+    family: "STATIC FIELD",
+    material: "GRAPHITE FOIL",
+    emotion: "CURIOUS",
+    breakRule: "TOOL CROSSES INDEX",
+    signal: "TEST / 88",
+    note: "Procedure remains unofficial until the subject says otherwise.",
+    remyState: "lab",
+    frameClass: styles.zoom,
+    subjectClass: canonPlacement.lab,
+  },
+  {
+    id: "RR-FM-08",
+    title: "ROOMBA CONTACT",
+    event: "MOBILE SURFACE ACCEPTED",
+    family: "CONDUCTIVE RING",
+    material: "MINT INDICATOR",
+    emotion: "UNBOTHERED",
+    breakRule: "PATROL OVERRIDES CIRCLE",
+    signal: "RIDE / 05",
+    note: "Patrol canon clears the conductive ring without surrendering the route.",
+    remyState: "patrol",
+    frameClass: styles.roomba,
+    subjectClass: canonPlacement.roomba,
+  },
+];
+
+function CanonRemy({
+  remyState,
+  subjectClass,
+}: Pick<Specimen, "remyState" | "subjectClass">) {
+  const asset = getRemyCanonVectorAsset(remyState);
+
+  return (
+    <Image
+      className={`${styles.remy} ${styles.remyCanon} ${canonPlacement.canonRemy} ${subjectClass}`}
+      data-canon-state={remyState}
+      data-figma-node-id={asset.figmaNodeId}
+      src={asset.publicPath}
+      width={asset.width}
+      height={asset.height}
+      sizes="(max-width: 760px) 68vw, 330px"
+      style={{ height: "auto" }}
+      unoptimized
+      alt={`Canon Remy — ${remyState} state`}
+    />
+  );
+}
+
+function SpecimenCard({ specimen }: { specimen: Specimen }) {
+  return (
+    <article className={`${styles.specimen} ${specimen.frameClass}`}>
+      <header className={styles.specimenHeader}>
+        <span>{specimen.id}</span>
+        <span>{specimen.family}</span>
+      </header>
+
+      <div className={styles.carrier}>
+        <div className={styles.surface} aria-hidden="true" />
+        <div className={styles.indexRail} aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          <i />
+        </div>
+
+        <div className={styles.visualField}>
+          {specimen.id === RR_SPECIMEN_GLASS.routeSpecimenId ? (
+            <SpecimenGlassMaterial filterId="rr-route-specimen-glass" />
+          ) : null}
+          <span className={styles.fieldCode}>{specimen.signal}</span>
+          <div className={styles.trace} aria-hidden="true" />
+          <CanonRemy remyState={specimen.remyState} subjectClass={specimen.subjectClass} />
+          <span className={styles.breakLabel}>{specimen.breakRule}</span>
+        </div>
+
+        <div className={styles.titleBlock}>
+          <span>{specimen.title}</span>
+          <strong>{specimen.event}</strong>
+        </div>
+
+        <div className={styles.stateBand}>
+          <span>MATERIAL STATE</span>
+          <b>{specimen.material}</b>
+          <span>EMOTIONAL STATE</span>
+          <b>{specimen.emotion}</b>
+        </div>
+
+        <div className={styles.note}>{specimen.note}</div>
+        <div className={styles.serialRow}>
+          <span>REMY RELICS / MUTATION LAB</span>
+          <span>CANON VECTOR / {specimen.remyState.toUpperCase()}</span>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export default function FrameMutationLabRoute() {
+  return (
+    <main className={styles.page}>
+      <header className={styles.hero}>
+        <div className={styles.heroMeta}>
+          <span>RR / INTERNAL STUDY</span>
+          <span>FRAME MUTATION LAB / 03</span>
+        </div>
+        <h1>Relic-state carriers for behavior that refuses containment.</h1>
+        <p>
+          Eight original frame families built from Remy Relics grammar: quiet archival structure,
+          semantic materials, tiny state signals, and one controlled rule-break per object. The
+          subject layer now resolves through the complete six-state Figma vector family. Rarity is
+          not scarcity here. Rarity is the material a memory seems to want.
+        </p>
+        <div className={styles.heroRail}>
+          <span>CANON REMY / 06 STATES</span>
+          <span>→</span>
+          <span>STATE</span>
+          <span>→</span>
+          <span>MATERIAL</span>
+          <span>→</span>
+          <span>BREACH</span>
+        </div>
+      </header>
+
+      <section className={styles.rules} aria-labelledby="rules-heading">
+        <div>
+          <span className={styles.sectionIndex}>00</span>
+          <h2 id="rules-heading">Mutation rules</h2>
+        </div>
+        <ol>
+          <li>Every family must read before the microcopy is legible.</li>
+          <li>Material state carries emotional meaning; it is never decorative foil for its own sake.</li>
+          <li>Remy may break exactly one primary containment rule per frame.</li>
+          <li>The breach must preserve the archive skeleton rather than erase it.</li>
+          <li>The subject layer must resolve through one of the six canonical Figma vectors.</li>
+        </ol>
+      </section>
+
+      <section className={styles.grid} aria-label="Eight frame mutation specimens">
+        {specimens.map((specimen) => (
+          <SpecimenCard key={specimen.id} specimen={specimen} />
+        ))}
+      </section>
+
+      <section className={styles.legend} aria-labelledby="legend-heading">
+        <div>
+          <span className={styles.sectionIndex}>09</span>
+          <h2 id="legend-heading">Material ≠ rarity tier</h2>
+        </div>
+        <p>
+          The collectible signal comes from mismatch and specificity: frosted acrylic for sleep,
+          flock for attachment, enamel for provocation, graphite foil for protocol exceptions. The
+          more emotionally exact the material feels, the rarer the record feels—without needing a
+          hierarchy of common through legendary.
+        </p>
+      </section>
+
+      <footer className={styles.footer}>
+        <span>REMY RELICS / QUIET FICTIONAL PACKAGING FOR EMOTIONALLY SIGNIFICANT ANIMALS</span>
+        <span>LAB RECORD / 2026</span>
+      </footer>
+    </main>
+  );
+}

@@ -27,6 +27,13 @@ export const FIGMA_NODES = {
   remyPatrol: "580:10",
   remyClipboard: "580:4",
   remyBox: "580:8",
+  remyCanonFamily: "1028:529",
+  remyCanonBase: "1008:176",
+  remyCanonClipboard: "1009:164",
+  remyCanonSleep: "1010:140",
+  remyCanonBox: "1011:282",
+  remyCanonPatrol: "1019:198",
+  remyCanonLab: "1013:233",
   spatialCue: "600:20",
 } as const satisfies Record<string, FigmaNodeId>;
 
