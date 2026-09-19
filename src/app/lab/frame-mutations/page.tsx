@@ -5,9 +5,11 @@ import {
   getRemyCanonVectorAsset,
   type RemyCanonVectorKey,
 } from "@/data/remy-canon-vector-manifest";
+import { RR_SPECIMEN_GLASS } from "@/data/specimen-glass-material";
 
 import styles from "./frame-mutations.module.css";
 import canonPlacement from "./canon-placement.module.css";
+import { SpecimenGlassMaterial } from "./specimen-glass";
 
 export const metadata: Metadata = {
   title: "Frame Mutation Lab — Remy Relics",
@@ -185,6 +187,9 @@ function SpecimenCard({ specimen }: { specimen: Specimen }) {
         </div>
 
         <div className={styles.visualField}>
+          {specimen.id === RR_SPECIMEN_GLASS.routeSpecimenId ? (
+            <SpecimenGlassMaterial filterId="rr-route-specimen-glass" />
+          ) : null}
           <span className={styles.fieldCode}>{specimen.signal}</span>
           <div className={styles.trace} aria-hidden="true" />
           <CanonRemy remyState={specimen.remyState} subjectClass={specimen.subjectClass} />
